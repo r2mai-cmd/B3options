@@ -2,27 +2,6 @@
 
 Terminal web de análise de volatilidade e opções para ações negociadas na B3.
 
-## O que já está no MVP
-
-- Dashboard/scanner com cards de ações
-- IV, HV, IV/HV, IV Rank e IV Percentile
-- Sparklines de volatilidade
-- Busca e filtros
-- Ordenação por métricas
-- Ranking lateral
-- Detalhamento do ativo
-- Série IV x HV
-- Histórico de IV Rank
-- Distribuição de IV
-- Curva de IV por strike
-- Term structure
-- Skew 25-delta
-- Cadeia de opções com gregas, volume, OI e spread
-- Fluxo/negócios em uma visão resumida
-- Watchlist local
-- Interface responsiva
-- Dados mockados, prontos para serem substituídos por uma API real
-
 ## Rodando localmente
 
 ```bash
@@ -30,25 +9,39 @@ npm install
 npm run dev
 ```
 
-Abra o endereço mostrado pelo Vite.
+## Publicando no GitHub Pages
 
-## Próxima etapa: dados reais
+1. Suba os arquivos para a branch `main`.
+2. No GitHub, abra **Settings → Pages**.
+3. Em **Build and deployment → Source**, selecione **GitHub Actions**.
+4. Faça um novo push na `main` ou execute o workflow em **Actions → Deploy to GitHub Pages → Run workflow**.
+5. O site será publicado em:
 
-O frontend está propositalmente desacoplado da fonte de dados. A ideia é criar uma API backend que entregue:
+`https://r2mai-cmd.github.io/B3options/`
 
-- ativos e cotações
-- candles históricos
-- cadeia de opções
-- bid/ask/last
-- volume
-- open interest
-- IV
-- gregas
-- eventos/dividendos
-- séries históricas de IV/HV
+O `vite.config.ts` já está configurado com `base: '/B3options/'`.
 
-Depois, substitua `src/data/mockData.ts` pelos hooks de API em `src/api/`.
+## Conteúdo do MVP
 
-## Observação
+- Dashboard/scanner com cards
+- IV, HV, IV/HV, IV Rank e IV Percentile
+- Sparklines
+- Busca, filtros e ordenação
+- Watchlist
+- Rankings
+- Página detalhada do ativo
+- Histórico IV × HV
+- IV Rank histórico
+- Distribuição de IV
+- Curva por strike
+- Term structure
+- Skew
+- Cadeia de opções
+- Gregas
+- Volume e Open Interest
+- Visão de fluxo
+- Área de notícias/eventos preparada para integração
 
-Os números exibidos neste MVP são fictícios e servem somente para prototipação da interface e dos cálculos/visualizações. Não use os dados mockados para tomada de decisão financeira.
+## Dados
+
+Os valores atuais são demonstrativos/mockados. Antes de usar para negociação, conecte uma fonte real de mercado e um backend para ingestão, armazenamento e cálculo dos indicadores.
