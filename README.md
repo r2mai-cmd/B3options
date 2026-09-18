@@ -1,47 +1,40 @@
-# B3Vol
+# B3Vol — B3 Options Volatility Terminal
 
-Terminal web de análise de volatilidade e opções para ações negociadas na B3.
+Projeto React + Vite para análise de opções da B3.
 
-## Rodando localmente
+## Estrutura
 
-```bash
-npm install
-npm run dev
+```text
+.
+├── docs/
+│   └── b3options/
+│       ├── src/
+│       ├── index.html
+│       ├── package.json
+│       └── vite.config.ts
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+└── README.md
 ```
 
-## Publicando no GitHub Pages
+O app fica em `docs/b3options`, enquanto o GitHub Actions gera o build em `dist/` e publica esse build no GitHub Pages.
 
-1. Suba os arquivos para a branch `main`.
-2. No GitHub, abra **Settings → Pages**.
-3. Em **Build and deployment → Source**, selecione **GitHub Actions**.
-4. Faça um novo push na `main` ou execute o workflow em **Actions → Deploy to GitHub Pages → Run workflow**.
-5. O site será publicado em:
+## GitHub Pages
+
+Em **Settings → Pages** escolha:
+
+**Source: GitHub Actions**
+
+Depois faça push na `main`. O workflow **Deploy B3Vol to GitHub Pages** fará:
+
+1. instalar as dependências de `docs/b3options`;
+2. executar `npm run build`;
+3. gerar o `dist`;
+4. publicar o `dist` no GitHub Pages.
+
+URL esperada:
 
 `https://r2mai-cmd.github.io/B3options/`
 
-O `vite.config.ts` já está configurado com `base: '/B3options/'`.
-
-## Conteúdo do MVP
-
-- Dashboard/scanner com cards
-- IV, HV, IV/HV, IV Rank e IV Percentile
-- Sparklines
-- Busca, filtros e ordenação
-- Watchlist
-- Rankings
-- Página detalhada do ativo
-- Histórico IV × HV
-- IV Rank histórico
-- Distribuição de IV
-- Curva por strike
-- Term structure
-- Skew
-- Cadeia de opções
-- Gregas
-- Volume e Open Interest
-- Visão de fluxo
-- Área de notícias/eventos preparada para integração
-
-## Dados
-
-Os valores atuais são demonstrativos/mockados. Antes de usar para negociação, conecte uma fonte real de mercado e um backend para ingestão, armazenamento e cálculo dos indicadores.
+Os dados do MVP são demonstrativos/mockados.
