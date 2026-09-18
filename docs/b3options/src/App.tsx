@@ -1,102 +1,193 @@
 import { useMemo, useState } from "react";
+import "./App.css";
 
 type Tab = "dashboard" | "scanner" | "watchlist" | "details" | "news";
+type OptionType = "CALL" | "PUT";
 
-type Stock = {
+type Asset = {
   ticker: string;
   name: string;
+  sector: string;
   price: number;
+  change: number;
   iv: number;
   hv: number;
   ivRank: number;
   ivPercentile: number;
   skew: number;
-  options: number;
-  volume: string;
-  oi: string;
-  change: number;
-  sector: string;
+  liquidity: number;
+  openInterest: number;
+  volume: number;
+  beta: number;
+  dividendYield: number;
+  earningsDays: number;
 };
 
-const stocks: Stock[] = [
-  { ticker: "PETR4", name: "Petrobras PN", price: 38.42, iv: 31.8, hv: 24.7, ivRank: 82, ivPercentile: 91, skew: -5.4, options: 74, volume: "R$ 28,4M", oi: "1,82M", change: 1.72, sector: "Petróleo" },
-  { ticker: "VALE3", name: "Vale ON", price: 63.18, iv: 27.4, hv: 23.1, ivRank: 68, ivPercentile: 77, skew: -3.1, options: 61, volume: "R$ 17,8M", oi: "1,21M", change: -0.42, sector: "Mineração" },
-  { ticker: "ITUB4", name: "Itaú Unibanco PN", price: 42.67, iv: 22.1, hv: 19.8, ivRank: 54, ivPercentile: 63, skew: -2.8, options: 49, volume: "R$ 11,3M", oi: "2,08M", change: 0.86, sector: "Bancos" },
-  { ticker: "BBDC4", name: "Bradesco PN", price: 16.84, iv: 24.6, hv: 21.4, ivRank: 61, ivPercentile: 71, skew: -4.2, options: 57, volume: "R$ 8,6M", oi: "1,64M", change: 1.08, sector: "Bancos" },
-  { ticker: "PETR3", name: "Petrobras ON", price: 40.12, iv: 30.2, hv: 25.0, ivRank: 78, ivPercentile: 88, skew: -5.1, options: 63, volume: "R$ 7,4M", oi: "812K", change: 1.24, sector: "Petróleo" },
-  { ticker: "BBAS3", name: "Banco do Brasil ON", price: 28.31, iv: 25.8, hv: 22.5, ivRank: 58, ivPercentile: 68, skew: -3.7, options: 43, volume: "R$ 6,9M", oi: "1,05M", change: -0.31, sector: "Bancos" },
-  { ticker: "WEGE3", name: "WEG ON", price: 45.92, iv: 26.9, hv: 24.8, ivRank: 72, ivPercentile: 84, skew: -2.1, options: 38, volume: "R$ 5,1M", oi: "438K", change: 2.14, sector: "Indústria" },
-  { ticker: "MGLU3", name: "Magazine Luiza ON", price: 8.74, iv: 48.2, hv: 43.7, ivRank: 89, ivPercentile: 96, skew: -8.7, options: 31, volume: "R$ 3,2M", oi: "792K", change: -2.48, sector: "Varejo" },
-  { ticker: "B3SA3", name: "B3 ON", price: 13.58, iv: 23.7, hv: 20.9, ivRank: 49, ivPercentile: 57, skew: -3.4, options: 42, volume: "R$ 4,8M", oi: "1,31M", change: 0.55, sector: "Financeiro" },
-  { ticker: "ABEV3", name: "Ambev ON", price: 13.02, iv: 19.4, hv: 17.8, ivRank: 36, ivPercentile: 44, skew: -1.9, options: 28, volume: "R$ 2,1M", oi: "601K", change: 0.18, sector: "Consumo" },
+type OptionRow = {
+  symbol: string;
+  type: OptionType;
+  strike: number;
+  expiration: string;
+  days: number;
+  bid: number;
+  ask: number;
+  last: number;
+  volume: number;
+  oi: number;
+  iv: number;
+  delta: number;
+  gamma: number;
+  theta: number;
+  vega: number;
+};
+
+const assets: Asset[] = [
+  { ticker: "PETR4", name: "Petrobras PN", sector: "Petróleo & Gás", price: 38.42, change: 1.84, iv: 31.6, hv: 27.8, ivRank: 72, ivPercentile: 81, skew: -4.8, liquidity: 96, openInterest: 1840000, volume: 428000, beta: 1.18, dividendYield: 10.8, earningsDays: 21 },
+  { ticker: "VALE3", name: "Vale ON", sector: "Mineração", price: 61.18, change: -0.72, iv: 28.4, hv: 29.7, ivRank: 46, ivPercentile: 53, skew: -6.2, liquidity: 93, openInterest: 1260000, volume: 311000, beta: 1.05, dividendYield: 7.1, earningsDays: 35 },
+  { ticker: "ITUB4", name: "Itaú Unibanco PN", sector: "Bancos", price: 39.75, change: 0.48, iv: 22.9, hv: 20.4, ivRank: 63, ivPercentile: 70, skew: -3.1, liquidity: 98, openInterest: 980000, volume: 287000, beta: 0.91, dividendYield: 6.4, earningsDays: 28 },
+  { ticker: "BBDC4", name: "Bradesco PN", sector: "Bancos", price: 14.62, change: -1.12, iv: 26.7, hv: 24.1, ivRank: 58, ivPercentile: 64, skew: -4.2, liquidity: 91, openInterest: 720000, volume: 192000, beta: 1.02, dividendYield: 5.9, earningsDays: 42 },
+  { ticker: "BBAS3", name: "Banco do Brasil ON", sector: "Bancos", price: 28.93, change: 0.91, iv: 25.1, hv: 22.7, ivRank: 67, ivPercentile: 75, skew: -5.5, liquidity: 89, openInterest: 615000, volume: 141000, beta: 1.08, dividendYield: 8.2, earningsDays: 31 },
+  { ticker: "WEGE3", name: "WEG ON", sector: "Bens Industriais", price: 48.31, change: 1.27, iv: 24.3, hv: 25.6, ivRank: 38, ivPercentile: 44, skew: -2.7, liquidity: 86, openInterest: 284000, volume: 69000, beta: 0.86, dividendYield: 1.8, earningsDays: 49 },
+  { ticker: "ABEV3", name: "Ambev ON", sector: "Bebidas", price: 13.94, change: 0.15, iv: 20.8, hv: 18.9, ivRank: 51, ivPercentile: 58, skew: -2.2, liquidity: 88, openInterest: 410000, volume: 103000, beta: 0.72, dividendYield: 5.2, earningsDays: 17 },
+  { ticker: "B3SA3", name: "B3 ON", sector: "Financeiro", price: 13.18, change: -0.38, iv: 23.7, hv: 21.2, ivRank: 55, ivPercentile: 61, skew: -3.9, liquidity: 90, openInterest: 530000, volume: 118000, beta: 1.01, dividendYield: 2.7, earningsDays: 24 },
 ];
 
-const expiries = [
-  { label: "18 SET", days: 0, iv: 28.7 },
-  { label: "17 OUT", days: 29, iv: 30.1 },
-  { label: "21 NOV", days: 64, iv: 31.8 },
-  { label: "19 DEZ", days: 92, iv: 32.5 },
-  { label: "16 JAN", days: 120, iv: 33.2 },
-];
+const expirations = ["18/09/2026", "16/10/2026", "20/11/2026", "18/12/2026"];
 
-const options = [
-  ["PETRI390", "C", "39.00", "0.72", "31.8%", "0.54", "18.4K", "96.2K"],
-  ["PETRI400", "C", "40.00", "0.39", "30.9%", "0.38", "25.7K", "142.8K"],
-  ["PETRI410", "C", "41.00", "0.18", "30.4%", "0.24", "31.1K", "178.3K"],
-  ["PETRU360", "P", "36.00", "0.31", "33.9%", "-0.28", "14.2K", "88.1K"],
-  ["PETRU370", "P", "37.00", "0.52", "32.7%", "-0.42", "19.8K", "112.6K"],
-  ["PETRU380", "P", "38.00", "0.86", "31.9%", "-0.61", "22.4K", "135.9K"],
-];
+function money(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
-function Sparkline({ up = true }: { up?: boolean }) {
-  const points = up
-    ? "0,45 12,42 24,46 36,35 48,39 60,28 72,31 84,20 96,24 108,12 120,17 132,8"
-    : "0,10 12,13 24,8 36,20 48,17 60,28 72,24 84,34 96,31 108,42 120,38 132,48";
+function compact(value: number) {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)} mi`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(0)} mil`;
+  return value.toString();
+}
+
+function Sparkline({ positive = true }: { positive?: boolean }) {
+  const points = positive
+    ? "0,48 15,44 30,46 45,37 60,39 75,30 90,34 105,22 120,26 135,16 150,20 165,8"
+    : "0,12 15,17 30,15 45,25 60,22 75,31 90,29 105,39 120,34 135,45 150,41 165,53";
   return (
-    <svg viewBox="0 0 132 52" className="sparkline" preserveAspectRatio="none">
-      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2" />
+    <svg className="sparkline" viewBox="0 0 165 60" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2.5" />
     </svg>
   );
 }
 
-function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Metric({
+  label,
+  value,
+  hint,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  tone?: "neutral" | "positive" | "negative" | "accent";
+}) {
   return (
-    <div className="metric">
-      <div className="metric-label">{label}</div>
-      <div className="metric-value">{value}</div>
-      {hint && <div className="metric-hint">{hint}</div>}
+    <div className="metric-card">
+      <span className="metric-label">{label}</span>
+      <strong className={`metric-value ${tone}`}>{value}</strong>
+      {hint && <span className="metric-hint">{hint}</span>}
     </div>
   );
 }
 
-export default function App() {
+function App() {
   const [tab, setTab] = useState<Tab>("dashboard");
-  const [selected, setSelected] = useState<Stock>(stocks[0]);
   const [query, setQuery] = useState("");
   const [sector, setSector] = useState("Todos");
-  const [favorite, setFavorite] = useState(false);
-  const [range, setRange] = useState("1 ano");
+  const [sort, setSort] = useState<"ivRank" | "iv" | "percentile" | "change">("ivRank");
+  const [selectedTicker, setSelectedTicker] = useState("PETR4");
+  const [favorite, setFavorite] = useState<string[]>(["PETR4", "ITUB4"]);
+  const [expiration, setExpiration] = useState(expirations[0]);
+  const [optionType, setOptionType] = useState<"ALL" | OptionType>("ALL");
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return stocks.filter((s) =>
-      (!q || `${s.ticker} ${s.name}`.toLowerCase().includes(q)) &&
-      (sector === "Todos" || s.sector === sector)
+  const selected = assets.find((a) => a.ticker === selectedTicker) ?? assets[0];
+
+  const filteredAssets = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    return [...assets]
+      .filter((a) => sector === "Todos" || a.sector === sector)
+      .filter((a) => !normalized || `${a.ticker} ${a.name}`.toLowerCase().includes(normalized))
+      .sort((a, b) => {
+        if (sort === "iv") return b.iv - a.iv;
+        if (sort === "percentile") return b.ivPercentile - a.ivPercentile;
+        if (sort === "change") return b.change - a.change;
+        return b.ivRank - a.ivRank;
+      });
+  }, [query, sector, sort]);
+
+  const sectors = ["Todos", ...Array.from(new Set(assets.map((a) => a.sector)))];
+
+  const options = useMemo<OptionRow[]>(() => {
+    const base = selected.price;
+    const rows: OptionRow[] = [];
+    const strikes = [
+      base * 0.9,
+      base * 0.95,
+      base * 0.98,
+      base,
+      base * 1.02,
+      base * 1.05,
+      base * 1.1,
+    ];
+    strikes.forEach((strike, i) => {
+      const distance = (strike - base) / base;
+      const callIv = selected.iv + distance * 7 + i * 0.15;
+      const putIv = selected.iv - distance * 5 + (6 - i) * 0.18;
+      const callLast = Math.max(0.12, base * Math.max(0.01, 0.07 - distance * 0.9));
+      const putLast = Math.max(0.12, base * Math.max(0.01, 0.07 + distance * 0.9));
+      rows.push({
+        symbol: `${selected.ticker}${i + 1}C`,
+        type: "CALL",
+        strike,
+        expiration,
+        days: 28,
+        bid: callLast * 0.98,
+        ask: callLast * 1.02,
+        last: callLast,
+        volume: Math.round(18000 - i * 1300),
+        oi: Math.round(125000 - i * 8500),
+        iv: callIv,
+        delta: Math.max(0.04, Math.min(0.96, 0.55 - distance * 2.1)),
+        gamma: 0.018 - Math.abs(distance) * 0.006,
+        theta: -(callLast * 0.045),
+        vega: base * 0.0018,
+      });
+      rows.push({
+        symbol: `${selected.ticker}${i + 1}P`,
+        type: "PUT",
+        strike,
+        expiration,
+        days: 28,
+        bid: putLast * 0.98,
+        ask: putLast * 1.02,
+        last: putLast,
+        volume: Math.round(15000 - i * 1000),
+        oi: Math.round(110000 - i * 7200),
+        iv: putIv,
+        delta: -Math.max(0.04, Math.min(0.96, 0.45 + distance * 2.0)),
+        gamma: 0.017 - Math.abs(distance) * 0.005,
+        theta: -(putLast * 0.047),
+        vega: base * 0.0019,
+      });
+    });
+    return rows.filter((r) => optionType === "ALL" || r.type === optionType);
+  }, [selected, expiration, optionType]);
+
+  function toggleFavorite(ticker: string) {
+    setFavorite((current) =>
+      current.includes(ticker) ? current.filter((x) => x !== ticker) : [...current, ticker],
     );
-  }, [query, sector]);
+  }
 
-  const selectStock = (s: Stock) => {
-    setSelected(s);
+  function openDetails(ticker: string) {
+    setSelectedTicker(ticker);
     setTab("details");
-  };
-
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "dashboard", label: "Visão geral" },
-    { id: "scanner", label: "Scanner" },
-    { id: "watchlist", label: "Watchlist" },
-    { id: "details", label: "Detalhes" },
-    { id: "news", label: "Eventos" },
-  ];
+  }
 
   return (
     <div className="app">
@@ -108,18 +199,33 @@ export default function App() {
             <div className="brand-sub">VOLATILIDADE • OPÇÕES • B3</div>
           </div>
         </div>
-        <div className="market-status"><span className="dot" /> Mercado aberto</div>
+
+        <div className="market-status">
+          <span className="status-dot" />
+          Mercado aberto
+        </div>
+
         <div className="top-actions">
-          <button className="icon-btn">⌕</button>
-          <button className="icon-btn">⚙</button>
+          <button className="icon-btn" title="Pesquisa">⌕</button>
+          <button className="icon-btn" title="Notificações">◔</button>
           <button className="avatar">R</button>
         </div>
       </header>
 
       <nav className="tabs">
-        {tabs.map((item) => (
-          <button key={item.id} className={tab === item.id ? "tab active" : "tab"} onClick={() => setTab(item.id)}>
-            {item.label}
+        {([
+          ["dashboard", "Visão geral"],
+          ["scanner", "Scanner"],
+          ["watchlist", "Watchlist"],
+          ["details", "Detalhes"],
+          ["news", "Eventos"],
+        ] as [Tab, string][]).map(([id, label]) => (
+          <button
+            key={id}
+            className={tab === id ? "tab active" : "tab"}
+            onClick={() => setTab(id)}
+          >
+            {label}
           </button>
         ))}
       </nav>
@@ -129,7 +235,7 @@ export default function App() {
           <div>
             <div className="eyebrow">TERMINAL DE VOLATILIDADE</div>
             <h1>Opções B3 em um só lugar.</h1>
-            <p>IV, volatilidade histórica, IV Rank, percentis, skew, term structure, gregas, liquidez e fluxo.</p>
+            <p>IV, volatilidade histórica, IV Rank, percentil, skew, term structure, gregas, liquidez e fluxo.</p>
           </div>
           <div className="hero-date">
             <span>Dados de referência</span>
@@ -139,43 +245,85 @@ export default function App() {
 
         {tab === "dashboard" && (
           <>
-            <section className="market-strip">
-              <Metric label="IBOV" value="142.318" hint="+0,82%" />
-              <Metric label="IV média" value="26,4%" hint="universo B3" />
+            <section className="metric-grid">
+              <Metric label="IBOV" value="142.318" hint="+0,82%" tone="positive" />
+              <Metric label="IV média B3" value="26,4%" hint="universo B3" tone="accent" />
               <Metric label="IV Rank médio" value="61" hint="últimos 252 pregões" />
-              <Metric label="Opções líquidas" value="R$ 1,42 bi" hint="volume diário" />
+              <Metric label="Opções líquidas" value="1.842" hint="volume relevante" />
               <Metric label="Open Interest" value="32,8 mi" hint="contratos" />
             </section>
 
             <section className="toolbar">
-              <div className="search"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar ticker ou empresa..." /></div>
+              <div className="search">
+                <span>⌕</span>
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Buscar ação ou ticker..."
+                />
+              </div>
               <select value={sector} onChange={(e) => setSector(e.target.value)}>
-                <option>Todos</option><option>Petróleo</option><option>Bancos</option><option>Mineração</option><option>Indústria</option><option>Varejo</option><option>Financeiro</option><option>Consumo</option>
+                {sectors.map((s) => <option key={s}>{s}</option>)}
               </select>
-              <button className="filter-btn">Filtros avançados</button>
+              <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}>
+                <option value="ivRank">Ordenar: IV Rank</option>
+                <option value="iv">Ordenar: IV</option>
+                <option value="percentile">Ordenar: Percentil</option>
+                <option value="change">Ordenar: Variação</option>
+              </select>
+              <span className="result-count">{filteredAssets.length} ativos</span>
             </section>
 
-            <div className="section-head">
-              <div><h2>Scanner de volatilidade</h2><span>{filtered.length} ativos no universo</span></div>
-              <div className="sort">Ordenar: <b>IV Rank ↓</b></div>
-            </div>
+            <section className="cards-grid">
+              {filteredAssets.map((asset) => (
+                <article className="asset-card" key={asset.ticker} onClick={() => openDetails(asset.ticker)}>
+                  <div className="asset-head">
+                    <div>
+                      <div className="ticker-row">
+                        <strong>{asset.ticker}</strong>
+                        <button
+                          className={`star ${favorite.includes(asset.ticker) ? "selected" : ""}`}
+                          onClick={(e) => { e.stopPropagation(); toggleFavorite(asset.ticker); }}
+                          title="Adicionar à watchlist"
+                        >
+                          {favorite.includes(asset.ticker) ? "★" : "☆"}
+                        </button>
+                      </div>
+                      <span>{asset.name}</span>
+                    </div>
+                    <div className={asset.change >= 0 ? "change positive" : "change negative"}>
+                      {asset.change >= 0 ? "+" : ""}{asset.change.toFixed(2)}%
+                    </div>
+                  </div>
 
-            <section className="cards">
-              {filtered.map((s) => (
-                <article className="stock-card" key={s.ticker} onClick={() => selectStock(s)}>
-                  <div className="card-top">
-                    <div><strong>{s.ticker}</strong><span>{s.name}</span></div>
-                    <span className={s.change >= 0 ? "change positive" : "change negative"}>{s.change >= 0 ? "+" : ""}{s.change.toFixed(2)}%</span>
+                  <div className="price-line">
+                    <strong>{money(asset.price)}</strong>
+                    <span>{asset.sector}</span>
                   </div>
-                  <div className="price-row"><strong>R$ {s.price.toFixed(2)}</strong><Sparkline up={s.change >= 0} /></div>
-                  <div className="metric-grid">
-                    <Metric label="IV" value={`${s.iv.toFixed(1)}%`} hint={`HV ${s.hv.toFixed(1)}%`} />
-                    <Metric label="IV Rank" value={`${s.ivRank}`} hint="252D" />
-                    <Metric label="Percentil" value={`${s.ivPercentile}%`} hint="252D" />
-                    <Metric label="Skew" value={`${s.skew.toFixed(1)}`} hint="25Δ" />
+
+                  <div className="mini-metrics">
+                    <div><span>IV</span><strong>{asset.iv.toFixed(1)}%</strong></div>
+                    <div><span>HV 30D</span><strong>{asset.hv.toFixed(1)}%</strong></div>
+                    <div><span>IV Rank</span><strong>{asset.ivRank}</strong></div>
+                    <div><span>Percentil</span><strong>{asset.ivPercentile}</strong></div>
                   </div>
-                  <div className="card-footer">
-                    <span>OI {s.oi}</span><span>Vol {s.volume}</span><span>{s.options} séries</span>
+
+                  <div className="rank-bar">
+                    <span style={{ width: `${asset.ivRank}%` }} />
+                  </div>
+
+                  <div className="card-bottom">
+                    <div>
+                      <span>IV × HV</span>
+                      <strong>{(asset.iv - asset.hv >= 0 ? "+" : "") + (asset.iv - asset.hv).toFixed(1)} pp</strong>
+                    </div>
+                    <Sparkline positive={asset.change >= 0} />
+                  </div>
+
+                  <div className="card-foot">
+                    <span>OI {compact(asset.openInterest)}</span>
+                    <span>Vol {compact(asset.volume)}</span>
+                    <span>Skew {asset.skew.toFixed(1)}</span>
                   </div>
                 </article>
               ))}
@@ -184,60 +332,255 @@ export default function App() {
         )}
 
         {tab === "scanner" && (
-          <section className="panel scanner-panel">
-            <div className="panel-head"><div><h2>Scanner avançado</h2><p>Encontre combinações de volatilidade e liquidez.</p></div><button className="primary">Salvar filtro</button></div>
-            <div className="scanner-grid">
-              {[
-                ["IV Rank mínimo", "70"], ["IV Percentile mínimo", "80"], ["IV - HV mínimo", "3%"], ["DTE mínimo", "20"], ["DTE máximo", "90"], ["OI mínimo", "100K"],
-              ].map(([a,b]) => <label key={a}>{a}<input defaultValue={b} /></label>)}
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <div className="eyebrow">SCANNER</div>
+                <h2>Onde a volatilidade está chamando atenção</h2>
+              </div>
+              <div className="chips">
+                <span className="chip">IV Rank &gt; 60</span>
+                <span className="chip">Liquidez alta</span>
+              </div>
             </div>
-            <div className="table-wrap"><table><thead><tr><th>Ticker</th><th>IV</th><th>HV</th><th>IV-HV</th><th>IV Rank</th><th>Percentil</th><th>Skew</th><th>OI</th></tr></thead><tbody>{stocks.filter(s => s.ivRank >= 70).map(s => <tr key={s.ticker} onClick={() => selectStock(s)}><td><b>{s.ticker}</b></td><td>{s.iv.toFixed(1)}%</td><td>{s.hv.toFixed(1)}%</td><td className="positive">+{(s.iv-s.hv).toFixed(1)}%</td><td><b>{s.ivRank}</b></td><td>{s.ivPercentile}%</td><td>{s.skew.toFixed(1)}</td><td>{s.oi}</td></tr>)}</tbody></table></div>
+            <div className="scanner-table">
+              {filteredAssets.map((a, index) => (
+                <div className="scanner-row" key={a.ticker} onClick={() => openDetails(a.ticker)}>
+                  <span className="position">{index + 1}</span>
+                  <strong>{a.ticker}</strong>
+                  <span>{a.name}</span>
+                  <span>IV <b>{a.iv.toFixed(1)}%</b></span>
+                  <span>HV <b>{a.hv.toFixed(1)}%</b></span>
+                  <span>Rank <b>{a.ivRank}</b></span>
+                  <span>Percentil <b>{a.ivPercentile}</b></span>
+                  <span className={a.change >= 0 ? "positive" : "negative"}>{a.change >= 0 ? "+" : ""}{a.change.toFixed(2)}%</span>
+                </div>
+              ))}
+            </div>
           </section>
         )}
 
         {tab === "watchlist" && (
-          <section className="panel"><div className="panel-head"><div><h2>Minha watchlist</h2><p>Acompanhe ativos e métricas que você definiu.</p></div><button className="primary">+ Adicionar ativo</button></div>
-            <div className="watchlist">{stocks.slice(0,5).map(s => <div className="watch-row" key={s.ticker} onClick={() => selectStock(s)}><div><b>{s.ticker}</b><span>{s.name}</span></div><span>{s.iv.toFixed(1)}% IV</span><span>IV Rank <b>{s.ivRank}</b></span><span className={s.change >= 0 ? "positive" : "negative"}>{s.change >= 0 ? "+" : ""}{s.change.toFixed(2)}%</span></div>)}</div>
-          </section>
-        )}
-
-        {tab === "news" && (
-          <section className="panel"><div className="panel-head"><div><h2>Eventos e catalisadores</h2><p>Área preparada para integrar calendário corporativo e notícias.</p></div></div>
-            <div className="events">{["Vencimento de opções — próximo ciclo", "Divulgação de resultados — calendário", "Data-com / proventos", "Eventos corporativos e fatos relevantes"].map((x,i)=><div className="event" key={x}><span className="event-date">SET {18+i*4}</span><div><b>{x}</b><p>Fonte de dados real poderá ser conectada nesta seção.</p></div></div>)}</div>
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <div className="eyebrow">WATCHLIST</div>
+                <h2>Ativos acompanhados</h2>
+              </div>
+              <span className="result-count">{favorite.length} ativos</span>
+            </div>
+            <div className="watch-grid">
+              {assets.filter((a) => favorite.includes(a.ticker)).map((a) => (
+                <div className="watch-item" key={a.ticker} onClick={() => openDetails(a.ticker)}>
+                  <div>
+                    <strong>{a.ticker}</strong>
+                    <span>{a.name}</span>
+                  </div>
+                  <div><b>{a.iv.toFixed(1)}%</b><small>IV</small></div>
+                  <div><b>{a.ivRank}</b><small>Rank</small></div>
+                  <div className={a.change >= 0 ? "positive" : "negative"}>{a.change >= 0 ? "+" : ""}{a.change.toFixed(2)}%</div>
+                </div>
+              ))}
+            </div>
           </section>
         )}
 
         {tab === "details" && (
-          <section className="details">
-            <div className="detail-header">
-              <button className="back" onClick={() => setTab("dashboard")}>← Scanner</button>
-              <div className="asset-title"><div className="ticker-big">{selected.ticker}</div><div><h2>{selected.name}</h2><span>{selected.sector} • ações e opções</span></div></div>
-              <button className={favorite ? "star active" : "star"} onClick={() => setFavorite(!favorite)}>{favorite ? "★" : "☆"} Watchlist</button>
-            </div>
-            <div className="detail-stats"><Metric label="Preço" value={`R$ ${selected.price.toFixed(2)}`} hint={`${selected.change >= 0 ? "+" : ""}${selected.change.toFixed(2)}% hoje`} /><Metric label="IV ATM" value={`${selected.iv.toFixed(1)}%`} hint="30D interpolada" /><Metric label="HV" value={`${selected.hv.toFixed(1)}%`} hint="30D close-to-close" /><Metric label="IV Rank" value={`${selected.ivRank}`} hint="252 pregões" /><Metric label="IV Percentile" value={`${selected.ivPercentile}%`} hint="252 pregões" /><Metric label="IV − HV" value={`${(selected.iv-selected.hv).toFixed(1)}%`} hint="prêmio de vol" /></div>
-
-            <div className="chart-panel panel">
-              <div className="panel-head"><div><h3>Histórico de IV × HV</h3><p>Volatilidade anualizada • janela {range}</p></div><div className="ranges">{["3 meses","6 meses","1 ano","2 anos"].map(r=><button className={range===r?"selected":""} key={r} onClick={()=>setRange(r)}>{r}</button>)}</div></div>
-              <div className="big-chart">
-                <div className="y-labels"><span>50%</span><span>40%</span><span>30%</span><span>20%</span><span>10%</span></div>
-                <svg viewBox="0 0 900 300" preserveAspectRatio="none"><g className="gridlines"><line x1="0" y1="20" x2="900" y2="20"/><line x1="0" y1="80" x2="900" y2="80"/><line x1="0" y1="140" x2="900" y2="140"/><line x1="0" y1="200" x2="900" y2="200"/><line x1="0" y1="260" x2="900" y2="260"/></g><polyline className="line-iv" points="0,190 70,170 140,185 210,125 280,150 350,105 420,130 490,85 560,120 630,65 700,100 770,75 840,45 900,60"/><polyline className="line-hv" points="0,210 70,200 140,195 210,170 280,180 350,160 420,165 490,145 560,155 630,135 700,145 770,125 840,120 900,115"/></svg>
-                <div className="chart-legend"><span><i className="legend-iv"/> IV</span><span><i className="legend-hv"/> HV</span></div>
+          <>
+            <section className="detail-header panel">
+              <div className="detail-title">
+                <button className="back-btn" onClick={() => setTab("dashboard")}>← Voltar</button>
+                <div className="ticker-large">{selected.ticker}</div>
+                <div>
+                  <h2>{selected.name}</h2>
+                  <span>{selected.sector} • {money(selected.price)} • <b className={selected.change >= 0 ? "positive" : "negative"}>{selected.change >= 0 ? "+" : ""}{selected.change.toFixed(2)}%</b></span>
+                </div>
               </div>
+              <button className="primary-btn" onClick={() => toggleFavorite(selected.ticker)}>
+                {favorite.includes(selected.ticker) ? "★ Na watchlist" : "☆ Adicionar"}
+              </button>
+            </section>
+
+            <section className="detail-grid">
+              <Metric label="Volatilidade implícita" value={`${selected.iv.toFixed(1)}%`} hint="média ponderada" tone="accent" />
+              <Metric label="Volatilidade histórica" value={`${selected.hv.toFixed(1)}%`} hint="30 dias" />
+              <Metric label="IV Rank" value={`${selected.ivRank}`} hint="252 pregões" />
+              <Metric label="IV Percentile" value={`${selected.ivPercentile}`} hint="% de dias abaixo" />
+              <Metric label="Skew 25Δ" value={`${selected.skew.toFixed(1)}%`} hint="put − call" />
+              <Metric label="Liquidez" value={`${selected.liquidity}/100`} hint="score indicativo" />
+            </section>
+
+            <section className="charts-grid">
+              <div className="panel chart-panel">
+                <div className="panel-head">
+                  <div><span className="eyebrow">HISTÓRICO</span><h3>IV × HV — 252 pregões</h3></div>
+                  <span className="legend"><i className="legend-iv" /> IV <i className="legend-hv" /> HV</span>
+                </div>
+                <div className="big-chart">
+                  <div className="grid-lines" />
+                  <svg viewBox="0 0 700 240" preserveAspectRatio="none">
+                    <polyline points="0,160 45,145 90,155 135,130 180,140 225,118 270,126 315,98 360,112 405,88 450,101 495,72 540,84 585,64 630,77 700,48" fill="none" stroke="currentColor" strokeWidth="3" />
+                    <polyline points="0,178 45,166 90,171 135,155 180,160 225,149 270,151 315,132 360,141 405,125 450,132 495,115 540,121 585,106 630,111 700,99" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="7 6" opacity=".55" />
+                  </svg>
+                  <div className="chart-axis"><span>-252D</span><span>-180D</span><span>-90D</span><span>Hoje</span></div>
+                </div>
+              </div>
+
+              <div className="panel chart-panel">
+                <div className="panel-head">
+                  <div><span className="eyebrow">IV RANK</span><h3>Distribuição histórica</h3></div>
+                  <strong className="big-number">{selected.ivRank}</strong>
+                </div>
+                <div className="histogram">
+                  {Array.from({ length: 28 }, (_, i) => (
+                    <span key={i} style={{ height: `${18 + ((i * 17) % 70)}%` }} />
+                  ))}
+                  <div className="hist-marker" style={{ left: `${selected.ivRank}%` }} />
+                </div>
+                <div className="chart-axis"><span>IV baixa</span><span>mediana</span><span>IV alta</span></div>
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panel-head">
+                <div><span className="eyebrow">VOLATILIDADE</span><h3>Smile, skew e term structure</h3></div>
+                <div className="control-group">
+                  <select value={expiration} onChange={(e) => setExpiration(e.target.value)}>
+                    {expirations.map((e) => <option key={e}>{e}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="vol-grid">
+                <div className="subchart">
+                  <h4>IV por strike</h4>
+                  <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+                    <polyline points="10,65 80,83 150,101 220,110 290,106 360,87 430,59 490,38" fill="none" stroke="currentColor" strokeWidth="3" />
+                    {[10,80,150,220,290,360,430,490].map((x, i) => <circle key={x} cx={x} cy={[65,83,101,110,106,87,59,38][i]} r="4" fill="currentColor" />)}
+                  </svg>
+                  <div className="chart-axis"><span>−20%</span><span>ATM</span><span>+20%</span></div>
+                </div>
+                <div className="subchart">
+                  <h4>Term structure</h4>
+                  <div className="term-bars">
+                    {[31.6, 30.4, 28.9, 27.8, 26.4].map((v, i) => (
+                      <div className="term-item" key={v}>
+                        <span>{[28, 56, 91, 154, 245][i]}D</span>
+                        <div><i style={{ width: `${v * 2.2}%` }} /></div>
+                        <b>{v.toFixed(1)}%</b>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="panel option-chain">
+              <div className="panel-head">
+                <div><span className="eyebrow">CHAIN</span><h3>Cadeia de opções</h3></div>
+                <div className="chain-controls">
+                  <select value={expiration} onChange={(e) => setExpiration(e.target.value)}>
+                    {expirations.map((e) => <option key={e}>{e}</option>)}
+                  </select>
+                  <select value={optionType} onChange={(e) => setOptionType(e.target.value as typeof optionType)}>
+                    <option value="ALL">Calls + Puts</option>
+                    <option value="CALL">Calls</option>
+                    <option value="PUT">Puts</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Opção</th><th>Tipo</th><th>Strike</th><th>Bid</th><th>Ask</th><th>Último</th>
+                      <th>Vol</th><th>OI</th><th>IV</th><th>Delta</th><th>Gamma</th><th>Theta</th><th>Vega</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {options.map((o) => (
+                      <tr key={o.symbol}>
+                        <td><strong>{o.symbol}</strong></td>
+                        <td><span className={o.type === "CALL" ? "type-call" : "type-put"}>{o.type}</span></td>
+                        <td>{money(o.strike)}</td>
+                        <td>{money(o.bid)}</td>
+                        <td>{money(o.ask)}</td>
+                        <td>{money(o.last)}</td>
+                        <td>{compact(o.volume)}</td>
+                        <td>{compact(o.oi)}</td>
+                        <td><b>{o.iv.toFixed(1)}%</b></td>
+                        <td>{o.delta.toFixed(2)}</td>
+                        <td>{o.gamma.toFixed(3)}</td>
+                        <td>{o.theta.toFixed(3)}</td>
+                        <td>{o.vega.toFixed(3)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="table-note">Dados exibidos são demonstrativos. Conecte uma fonte de mercado para cotações e gregas em tempo real.</div>
+            </section>
+
+            <section className="risk-grid">
+              <div className="panel">
+                <span className="eyebrow">CONTEXTO</span>
+                <h3>Informações do ativo</h3>
+                <div className="info-list">
+                  <div><span>Beta</span><b>{selected.beta.toFixed(2)}</b></div>
+                  <div><span>Dividend yield</span><b>{selected.dividendYield.toFixed(1)}%</b></div>
+                  <div><span>Próximo resultado</span><b>em {selected.earningsDays} dias</b></div>
+                  <div><span>Open Interest</span><b>{compact(selected.openInterest)}</b></div>
+                  <div><span>Volume opções</span><b>{compact(selected.volume)}</b></div>
+                </div>
+              </div>
+              <div className="panel">
+                <span className="eyebrow">LEITURA</span>
+                <h3>Indicadores quantitativos</h3>
+                <div className="signal-list">
+                  <div><span>IV − HV</span><strong>{(selected.iv - selected.hv).toFixed(1)} pp</strong></div>
+                  <div><span>IV Rank</span><strong>{selected.ivRank}/100</strong></div>
+                  <div><span>Percentil</span><strong>{selected.ivPercentile}/100</strong></div>
+                  <div><span>Skew 25Δ</span><strong>{selected.skew.toFixed(1)}%</strong></div>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {tab === "news" && (
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <div className="eyebrow">EVENTOS</div>
+                <h2>Eventos que podem afetar a volatilidade</h2>
+              </div>
+              <span className="chip">Próximos 60 dias</span>
             </div>
-
-            <div className="two-col">
-              <div className="panel"><div className="panel-head"><div><h3>Term structure</h3><p>IV por vencimento</p></div></div><div className="term-chart">{expiries.map((e,i)=><div className="term-item" key={e.label}><span>{e.label}</span><div className="bar"><i style={{width:`${e.iv/40*100}%`}}/></div><b>{e.iv.toFixed(1)}%</b></div>)}</div></div>
-              <div className="panel"><div className="panel-head"><div><h3>Distribuição de IV</h3><p>252 pregões</p></div></div><div className="distribution">{[8,15,24,36,54,72,90,70,48,31,19,10].map((h,i)=><i key={i} style={{height:`${h}%`}}/> )}</div><div className="dist-caption"><span>Mín 16,2%</span><b>Atual {selected.iv.toFixed(1)}%</b><span>Máx 49,7%</span></div></div>
+            <div className="events">
+              {[
+                ["18/09", "Vencimento de opções", "Janela de vencimento mensal da B3", "Mercado"],
+                ["21/09", "Reunião do Copom", "Decisão e comunicação de política monetária", "Macro"],
+                ["09/10", "Dados de inflação", "Indicadores econômicos podem alterar expectativas", "Macro"],
+                ["16/10", "Vencimento de opções", "Próximo ciclo de vencimento", "Mercado"],
+                ["31/10", "Temporada de resultados", "Janela de divulgação de resultados corporativos", "Empresas"],
+              ].map(([date, title, description, tag]) => (
+                <div className="event" key={title + date}>
+                  <div className="event-date">{date}</div>
+                  <div><strong>{title}</strong><span>{description}</span></div>
+                  <span className="chip">{tag}</span>
+                </div>
+              ))}
             </div>
-
-            <div className="panel options-panel"><div className="panel-head"><div><h3>Cadeia de opções</h3><p>Próximo vencimento • dados demonstrativos</p></div><div className="chain-controls"><button className="selected">Calls</button><button>Puts</button><select><option>17 OUT 2026</option><option>21 NOV 2026</option></select></div></div><div className="table-wrap"><table><thead><tr><th>Opção</th><th>Tipo</th><th>Strike</th><th>Prêmio</th><th>IV</th><th>Delta</th><th>Volume</th><th>OI</th></tr></thead><tbody>{options.map(o=><tr key={o[0]}><td><b>{o[0]}</b></td>{o.slice(1).map((v,j)=><td key={j}>{v}</td>)}</tr>)}</tbody></table></div></div>
-
-            <div className="greeks-grid">{[["Delta","0,54","sensibilidade ao ativo"],["Gamma","0,032","convexidade"],["Theta","-0,018","decaimento diário"],["Vega","0,094","sensibilidade à IV"],["Rho","0,021","sensibilidade a juros"],["Skew 25Δ","-5,4","inclinação da superfície"]].map(([a,b,c])=><div className="panel greek" key={a}><span>{a}</span><b>{b}</b><small>{c}</small></div>)}</div>
           </section>
         )}
       </main>
 
-      <footer><span>B3Options • terminal de análise</span><span>Dados demonstrativos • Conecte uma fonte licenciada para cotações reais.</span></footer>
+      <footer>
+        <span>B3Options • Terminal de volatilidade</span>
+        <span>Dados demonstrativos • Não é recomendação de investimento</span>
+      </footer>
     </div>
   );
 }
+
+export default App;
