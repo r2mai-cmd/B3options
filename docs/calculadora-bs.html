@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B3Options — Calculadora Black-Scholes</title>
+<style>
+body{margin:0;background:#070b10;color:#f4f7fb;font:16px Arial}header{height:68px;border-bottom:1px solid #263544;display:flex;align-items:center;padding:0 28px;gap:15px}a{color:#9fc8ee;text-decoration:none;margin-right:18px}.logo{background:#eef5fb;color:#071019;padding:10px;border-radius:9px;font-weight:900}.wrap{max-width:1100px;margin:35px auto;padding:0 24px}.card{background:#101923;border:1px solid #263544;border-radius:12px;padding:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.f label{display:block;color:#a9bbcc;font-size:13px;margin-bottom:6px}.f input,.f select{width:100%;box-sizing:border-box;background:#0b131b;color:#fff;border:1px solid #304252;border-radius:7px;padding:12px;font-size:16px}button{margin-top:20px;padding:12px 20px;border:0;border-radius:7px;background:#dcecf8;font-weight:bold;cursor:pointer}.result{margin-top:20px;font-size:24px}.muted{color:#91a4b8}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body><header><div class="logo">B3</div><b>B3Options</b><a href="index.html">Mercado</a><a href="simulador.html">Simulador</a><a href="calculadora-bs.html">Calculadora B&amp;S</a></header>
+<div class="wrap"><h1>Calculadora Black-Scholes</h1><p class="muted">Calcula o prêmio teórico de uma CALL ou PUT.</p><div class="card"><div class="grid">
+<div class="f"><label>Tipo</label><select id="type"><option>CALL</option><option>PUT</option></select></div>
+<div class="f"><label>Preço do ativo (S)</label><input id="S" type="number" step=".01" value="17.99"></div>
+<div class="f"><label>Strike (K)</label><input id="K" type="number" step=".01" value="15.03"></div>
+<div class="f"><label>Volatilidade anual (%)</label><input id="v" type="number" step=".1" value="34"></div>
+<div class="f"><label>Taxa de juros anual (%)</label><input id="r" type="number" step=".01" value="13.75"></div>
+<div class="f"><label>Tempo até vencimento (dias)</label><input id="d" type="number" value="41"></div>
+</div><button onclick="calc()">Calcular</button><div class="result" id="res">Prêmio: —</div></div></div>
+<script>
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x))}
+function calc(){let S=+document.getElementById('S').value,K=+document.getElementById('K').value,v=+document.getElementById('v').value/100,r=+document.getElementById('r').value/100,T=+document.getElementById('d').value/365,type=document.getElementById('type').value;let d1=(Math.log(S/K)+(r+v*v/2)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T),N=x=>.5*(1+erf(x/Math.sqrt(2))),p=type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);document.getElementById('res').textContent='Prêmio teórico: R$ '+p.toFixed(4)}
+calc();
+</script></body></html>
