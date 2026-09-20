@@ -1,29 +1,21 @@
-B3Options — Simulador de Estratégias
-====================================
+B3OPTIONS — ENTREGA CORRIGIDA
 
-Este pacote adiciona um SIMULADOR DE ESTRATÉGIAS separado da calculadora Black-Scholes.
+Substitua TODO o conteúdo da pasta /docs do GitHub pelos arquivos desta pasta:
 
-Arquivos:
-- index.html
-- style.css
-- script.js
+index.html
+style.css
+script.js
+calculadora-bs.html
+simulador.html
 
-Recursos:
-- múltiplas pernas CALL/PUT
-- compra/venda
-- quantidade
-- vencimento
-- strike
-- prêmio
-- IV
-- cálculo de gregas
-- custo/crédito líquido
-- gráfico de payoff no vencimento
-- resultado no preço atual
-- pontos de equilíbrio
-- cenários de 7/14/30 dias
-- fonte maior e contraste maior
+Atenção:
+1) Não deixe os arquivos antigos misturados.
+2) O menu tem dois itens separados:
+   - Calculadora B&S
+   - Simulador de Estratégias
+3) A Calculadora B&S segue o formulário da imagem enviada.
+4) O Simulador é uma página independente.
+5) Depois do commit, aguarde o GitHub Pages publicar e faça Ctrl+F5.
+6) Se o Pages estiver configurado para /docs, todos os 5 arquivos devem ficar diretamente em /docs.
 
-IMPORTANTE
-O simulador é um motor no navegador e usa os dados digitados pelo usuário.
-Para preencher automaticamente todas as séries reais da B3, será necessário conectar uma fonte/API de opções.
+O pacote já está organizado como /docs.
