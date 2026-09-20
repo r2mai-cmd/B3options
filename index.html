@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>B3Options — Simulador de Estratégias</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brandbox">B3</span><div><b>B3Options</b><small>VOLATILIDADE · OPÇÕES · B3</small></div></div>
+  <div class="market"><span></span> Mercado aberto</div>
+</header>
+
+<nav class="nav">
+  <a href="#" class="active">Mercado</a>
+  <a href="#">Scanner</a>
+  <a href="#">Watchlist</a>
+  <a href="#">Eventos</a>
+  <a href="#" class="active sim-link">Simulador</a>
+  <a href="#">Calculadora B&S</a>
+</nav>
+
+<main>
+  <div class="crumb">MERCADO / SIMULADOR</div>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">SIMULADOR DE ESTRATÉGIAS</div>
+      <h1>Monte e simule sua estratégia de opções.</h1>
+      <p>Adicione pernas CALL e PUT, altere strike, vencimento, quantidade e prêmio e veja payoff, resultado e gregas.</p>
+    </div>
+    <button id="resetBtn" class="ghost">Nova estratégia</button>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Estratégia</h2>
+        <span id="strategyStatus">Estratégia nova</span>
+      </div>
+      <div class="controls">
+        <label>Ativo <input id="underlying" value="PETR4" maxlength="8"></label>
+        <label>Preço atual <input id="spot" type="number" value="38.42" step="0.01"></label>
+        <label>Data-base <input id="baseDate" type="date"></label>
+        <label>Vencimento padrão <input id="expiryDefault" type="date"></label>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="legsTable">
+        <thead>
+          <tr>
+            <th></th><th>C/V</th><th>Qtd</th><th>Tipo</th><th>Vencimento</th>
+            <th>Strike</th><th>Prêmio</th><th>Total</th><th>IV</th><th>Delta</th><th>Gamma</th><th>Theta/dia</th><th>Vega</th>
+          </tr>
+        </thead>
+        <tbody id="legsBody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" class="right">Custo / crédito inicial</td>
+            <td id="totalPremium" class="money">R$ 0,00</td>
+            <td colspan="5"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="toolbar">
+      <button id="addCall" class="primary">＋ Adicionar CALL</button>
+      <button id="addPut" class="secondary">＋ Adicionar PUT</button>
+      <button id="addLong" class="secondary">Comprar perna</button>
+      <button id="addShort" class="secondary">Vender perna</button>
+      <label class="check"><input type="checkbox" id="showGreeks" checked> Mostrar gregas</label>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="panel-head compact">
+        <div>
+          <h2>Payoff no vencimento</h2>
+          <span>Resultado por preço do ativo</span>
+        </div>
+        <div class="legend">
+          <span><i class="dot payoff"></i> Payoff</span>
+          <span><i class="dot zero"></i> Zero</span>
+        </div>
+      </div>
+      <div class="chartbox"><canvas id="payoffChart"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head compact">
+        <div>
+          <h2>Resumo</h2>
+          <span>Dados calculados em tempo real</span>
+        </div>
+      </div>
+      <div class="summary">
+        <div><span>Preço do ativo</span><b id="sumSpot">R$ 0,00</b></div>
+        <div><span>Resultado no preço atual</span><b id="sumPnL">R$ 0,00</b></div>
+        <div><span>Máximo</span><b id="sumMax">—</b></div>
+        <div><span>Mínimo</span><b id="sumMin">—</b></div>
+        <div><span>Pontos de equilíbrio</span><b id="sumBE">—</b></div>
+        <div><span>Prêmio líquido</span><b id="sumPremium">R$ 0,00</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel scenarios">
+    <div class="panel-head compact">
+      <div><h2>Datas relevantes</h2><span>Veja como o resultado muda antes do vencimento</span></div>
+      <select id="scenarioDays">
+        <option value="0">No vencimento</option>
+        <option value="7">7 dias</option>
+        <option value="14">14 dias</option>
+        <option value="30">30 dias</option>
+      </select>
+    </div>
+    <div class="scenario-grid" id="scenarioGrid"></div>
+  </section>
+</main>
+
+<footer>B3Options · Simulador demonstrativo · Não é recomendação de investimento</footer>
+<script src="script.js"></script>
+</body>
+</html>
