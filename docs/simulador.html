@@ -5,200 +5,277 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B3Options — Simulador de Estratégias</title>
 <style>
-:root{
-  --bg:#070b10; --panel:#0e151d; --panel2:#111a24; --border:#263544;
-  --text:#f4f7fb; --muted:#91a4b8; --blue:#8fc7ff; --green:#00e59b;
-  --red:#ff5c72; --gold:#e2b84b; --grid:#24313d;
-}
+:root{--bg:#070b10;--panel:#0e151d;--panel2:#111a24;--border:#263544;--text:#f4f7fb;--muted:#91a4b8;--blue:#8fc7ff;--green:#00e59b;--red:#ff5c72;--gold:#e2b84b;--grid:#24313d}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:17px/1.5 Arial,Helvetica,sans-serif}
 header{height:68px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:24px;background:#080d13}
 .logo{width:38px;height:38px;border-radius:10px;background:#eef5fb;color:#0b1118;display:grid;place-items:center;font-weight:900}
 .brand{font-size:18px;font-weight:800}.sub{font-size:10px;letter-spacing:2px;color:#7f98b0}
-nav{display:flex;gap:8px;margin-left:28px}
-nav a{color:#9db4ca;text-decoration:none;padding:12px 14px;border-radius:7px;white-space:nowrap}
-nav a:hover,nav a.active{background:#131d27;color:#fff}
-main{max-width:1500px;margin:auto;padding:28px}
-h1{font-size:34px;margin:0 0 5px}.lead{color:var(--muted);margin:0 0 24px}
+nav{display:flex;gap:8px;margin-left:28px}nav a{color:#9db4ca;text-decoration:none;padding:12px 14px;border-radius:7px;white-space:nowrap}nav a:hover,nav a.active{background:#131d27;color:#fff}
+main{max-width:1500px;margin:auto;padding:28px}h1{font-size:34px;margin:0 0 5px}.lead{color:var(--muted);margin:0 0 24px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 button,select,input{font:inherit;color:var(--text);background:#0c141d;border:1px solid #304252;border-radius:7px;padding:10px 12px}
-button{cursor:pointer;background:#162330}button:hover{border-color:#6d91ae}
-button.primary{background:#dcecf8;color:#081019;font-weight:800}
-.layout{display:grid;grid-template-columns:560px 1fr;gap:18px}
+button{cursor:pointer;background:#162330}button:hover{border-color:#6d91ae}button.primary{background:#dcecf8;color:#081019;font-weight:800}
+.layout{display:grid;grid-template-columns:650px 1fr;gap:18px}
 .panel{background:linear-gradient(180deg,#101923,#0c141c);border:1px solid var(--border);border-radius:12px;padding:18px}
 .panel h2{font-size:20px;margin:0 0 15px}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.controls{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
 .field label{display:block;color:#a9bbcc;font-size:13px;margin-bottom:6px}.field input,.field select{width:100%}
-.strategy{overflow:auto;margin-top:15px}
-table{width:100%;border-collapse:collapse;min-width:700px}
-th,td{padding:9px 7px;border-bottom:1px solid #22303d;text-align:left;white-space:nowrap}
-th{color:#9eb2c5;font-size:12px}td{font-size:14px}
-td input,td select{width:auto;padding:7px 8px;font-size:14px}
-.buy{color:var(--green)}.sell{color:var(--red)}
+.asset-line{display:grid;grid-template-columns:1fr 150px;gap:10px;margin-bottom:12px}.asset-line label{display:block;color:#a9bbcc;font-size:13px;margin-bottom:6px}.asset-line select,.asset-line input{width:100%}
+.asset-info{display:flex;gap:14px;align-items:center;color:#8ea3b7;font-size:12px;margin:-3px 0 12px}.asset-info b{color:#e8f0f7;font-size:14px}
+.strategy{overflow:auto;margin-top:15px;border:1px solid #22303d;border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:8px 7px;border-bottom:1px solid #22303d;text-align:left;white-space:nowrap}th{color:#9eb2c5;font-size:12px}td{font-size:14px}
+td input,td select{width:auto;min-width:85px;padding:7px 8px;font-size:14px}td .readonly{background:#111b25;color:#a9bac9}
+.buy{color:var(--green)}.sell{color:var(--red)}.asset-row{background:#0b141d}
+.help{color:#91a4b8;font-size:13px;margin-top:14px;line-height:1.55}
+.suggestion{margin-top:12px;border:1px solid #263544;background:#0b131b;border-radius:8px;padding:11px;color:#91a4b8;font-size:12px}.suggestion b{color:#e8f0f7}
 .chartbox{height:540px;position:relative}.chartbox canvas{width:100%;height:100%}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
-.metric{border:1px solid var(--border);background:#0b131b;border-radius:8px;padding:11px}
-.metric span{display:block;color:#8ea3b7;font-size:12px}.metric b{font-size:18px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.metric{border:1px solid var(--border);background:#0b131b;border-radius:8px;padding:11px}.metric span{display:block;color:#8ea3b7;font-size:12px}.metric b{font-size:18px}
 .tabs{display:flex;gap:5px;margin:0 0 14px}.tab{padding:8px 12px}.tab.active{background:#dcecf8;color:#081019}
-.help{color:#91a4b8;font-size:13px;margin-top:14px}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}.chartbox{height:430px}.controls{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}
-
 .tools-strip{display:flex;gap:10px;margin:0 0 20px}.tools-strip a{color:#eaf3fb;text-decoration:none;border:1px solid #3b5062;border-radius:8px;padding:10px 14px;background:#101923;font-weight:800}.tools-strip a.on{border-color:#dcecf8}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.chartbox{height:430px}}
+@media(max-width:760px){.controls,.asset-line{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}main{padding:20px 14px}}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">B3</div><div><div class="brand">B3Options</div><div class="sub">VOLATILIDADE · OPÇÕES · B3</div></div>
   <nav>
-    <a href="index.html">Mercado</a>
-    <a href="index.html#scanner">Scanner</a>
-    <a href="index.html#watchlist">Watchlist</a>
-    <a href="index.html#eventos">Eventos</a>
-    <a href="calculadora-bs.html">Calculadora B&amp;S</a>
-    <a class="active" href="simulador.html">Simulador</a>
+    <a href="index.html">Mercado</a><a href="index.html#scanner">Scanner</a><a href="index.html#watchlist">Watchlist</a><a href="index.html#eventos">Eventos</a>
+    <a href="calculadora-bs.html">Calculadora B&amp;S</a><a class="active" href="simulador.html">Simulador</a>
   </nav>
 </header>
+<main>
+<div class="tools-strip"><a href="calculadora-bs.html">Calculadora B&amp;S</a><a class="on" href="simulador.html">Simulador de Estratégias</a></div>
+<h1>Simulador de Estratégias</h1>
+<p class="lead">Monte ativos, CALLs e PUTs, compras e vendas, altere o preço do ativo e visualize o payoff, P&amp;L e sensibilidade da estratégia.</p>
 
-<main><div class="tools-strip"><a href="calculadora-bs.html">Calculadora B&amp;S</a><a class="on" href="simulador.html">Simulador de Estratégias</a></div>
-  <h1>Simulador de Estratégias</h1>
-  <p class="lead">Monte CALLs e PUTs, compras e vendas, altere o preço do ativo e visualize o payoff, P&amp;L e sensibilidade da estratégia.</p>
+<div class="toolbar">
+  <button class="primary" id="addCall">+ CALL</button>
+  <button id="addPut">+ PUT</button>
+  <button id="addAsset">+ ATIVO</button>
+  <button id="clear">Limpar</button>
+  <button id="example">Carregar exemplo</button>
+</div>
 
-  <div class="toolbar">
-    <button class="primary" id="addCall">+ CALL</button>
-    <button id="addPut">+ PUT</button>
-    <button id="clear">Limpar</button>
-    <button id="example">Carregar exemplo</button>
-  </div>
+<div class="layout">
+<section class="panel">
+<h2>Parâmetros da estratégia</h2>
 
-  <div class="layout">
-    <section class="panel">
-      <h2>Parâmetros da estratégia</h2>
-      <div class="controls">
-        <div class="field"><label>Ativo / preço atual</label><input id="spot" type="number" step="0.01" value="17.99"></div>
-        <div class="field"><label>Vencimento</label><input id="expiry" type="date"></div>
-        <div class="field"><label>Volatilidade implícita (%)</label><input id="vol" type="number" step="0.1" value="34"></div>
-        <div class="field"><label>Taxa de juros a.a. (%)</label><input id="rate" type="number" step="0.01" value="13.75"></div>
-      </div>
+<div class="asset-line">
+  <div><label for="asset">Ativo / preço atual</label><select id="asset"></select></div>
+  <div><label for="spot">Preço atual</label><input id="spot" inputmode="decimal" value="182,47"></div>
+</div>
+<div class="asset-info"><span>Ativo selecionado:</span><b id="assetName">—</b><span>IV:</span><b id="assetVol">—</b><span>Setor:</span><b id="assetSector">—</b></div>
 
-      <div class="strategy">
-        <table>
-          <thead><tr><th></th><th>C/V</th><th>Qtd</th><th>Tipo</th><th>Strike</th><th>Prêmio</th></tr></thead>
-          <tbody id="legs"></tbody>
-        </table>
-      </div>
-      <div class="help">Use quantidade positiva para representar contratos. Compra paga prêmio; venda recebe prêmio. O gráfico mostra resultado líquido por contrato multiplicado pela quantidade.</div>
-    </section>
+<div class="controls">
+  <div class="field"><label for="expiry">Vencimento padrão</label><select id="expiry"></select></div>
+  <div class="field"><label for="vol">Volatilidade implícita (%)</label><input id="vol" inputmode="decimal" value="34,00"></div>
+  <div class="field"><label for="rate">Taxa de juros a.a. (%)</label><input id="rate" inputmode="decimal" value="13,75"></div>
+</div>
 
-    <section class="panel">
-      <div class="tabs">
-        <button class="tab active" data-mode="expiry">Vencimento</button>
-        <button class="tab" data-mode="today">Hoje</button>
-        <button class="tab" data-mode="7d">7 dias antes</button>
-        <button class="tab" data-mode="30d">30 dias antes</button>
-      </div>
-      <div class="chartbox"><canvas id="chart"></canvas></div>
-      <div class="metrics">
-        <div class="metric"><span>P&amp;L no preço atual</span><b id="pnlNow">—</b></div>
-        <div class="metric"><span>Resultado máximo</span><b id="max">—</b></div>
-        <div class="metric"><span>Resultado mínimo</span><b id="min">—</b></div>
-        <div class="metric"><span>Ponto(s) de equilíbrio</span><b id="be">—</b></div>
-      </div>
-    </section>
-  </div>
+<div class="suggestion"><b>Seleção de opções:</b> ao escolher CALL ou PUT, o simulador sugere automaticamente os strikes disponíveis para o ativo e vencimento. O código da série é preenchido junto com o strike.</div>
+
+<div class="strategy">
+<table>
+<thead><tr><th></th><th>C/V</th><th>Qtd</th><th>Tipo</th><th>Vencimento</th><th>Strike</th><th>Código</th><th>Preço/Prêmio</th></tr></thead>
+<tbody id="legs"></tbody>
+</table>
+</div>
+<div class="help">Use quantidade positiva para representar contratos. Compra paga prêmio; venda recebe prêmio. Para ATIVO, o campo Preço/Prêmio representa o preço de entrada da ação/ETF. Os campos de strike e código são sugeridos a partir do ativo, tipo e vencimento.</div>
+</section>
+
+<section class="panel">
+<div class="tabs">
+<button class="tab active" data-mode="expiry">Vencimento</button><button class="tab" data-mode="today">Hoje</button><button class="tab" data-mode="7d">7 dias antes</button><button class="tab" data-mode="30d">30 dias antes</button>
+</div>
+<div class="chartbox"><canvas id="chart"></canvas></div>
+<div class="metrics">
+<div class="metric"><span>P&amp;L no preço atual</span><b id="pnlNow">—</b></div><div class="metric"><span>Resultado máximo</span><b id="max">—</b></div><div class="metric"><span>Resultado mínimo</span><b id="min">—</b></div><div class="metric"><span>Ponto(s) de equilíbrio</span><b id="be">—</b></div>
+</div>
+</section>
+</div>
 </main>
 
 <script>
+const ASSETS=[{"code":"BOVA11","name":"ISHARES BOVA CI","price":182.47,"change":-4.8,"iv":18.0,"rank":0.0,"pct":0.0,"sector":"Bancos"},{"code":"PETR4","name":"PETROBRAS PN","price":11.83,"change":-3.43,"iv":20.71,"rank":7.3,"pct":5.9,"sector":"Petróleo"},{"code":"ITUB4","name":"ITAUUNIBANCO PN","price":19.66,"change":-2.06,"iv":23.42,"rank":14.6,"pct":11.8,"sector":"Energia"},{"code":"VALE3","name":"VALE ON","price":27.49,"change":-0.69,"iv":26.13,"rank":21.9,"pct":17.7,"sector":"Varejo"},{"code":"BOVV11","name":"BOVV11 ON","price":35.32,"change":0.68,"iv":28.84,"rank":29.2,"pct":23.6,"sector":"Tecnologia"},{"code":"BBAS3","name":"BRASIL ON","price":43.15,"change":2.05,"iv":31.55,"rank":36.5,"pct":29.5,"sector":"Imobiliário"},{"code":"CSMG3","name":"COPASA ON","price":50.98,"change":3.42,"iv":34.26,"rank":43.8,"pct":35.4,"sector":"Mineração"},{"code":"EMBJ3","name":"EMBRAER ON","price":58.81,"change":-4.41,"iv":36.97,"rank":51.1,"pct":41.3,"sector":"Bancos"},{"code":"WEGE3","name":"WEG ON","price":66.64,"change":-3.04,"iv":39.68,"rank":58.4,"pct":47.2,"sector":"Petróleo"},{"code":"RENT3","name":"LOCALIZA ON","price":74.47,"change":-1.67,"iv":42.39,"rank":65.7,"pct":53.1,"sector":"Energia"},{"code":"ENEV3","name":"ENEV3 ON","price":82.3,"change":-0.3,"iv":45.1,"rank":73.0,"pct":59.0,"sector":"Varejo"},{"code":"BBDC4","name":"BRADESCO PN","price":90.13,"change":1.07,"iv":47.81,"rank":80.3,"pct":64.9,"sector":"Tecnologia"},{"code":"BRAV3","name":"BRAV3 ON","price":97.96,"change":2.44,"iv":50.52,"rank":87.6,"pct":70.8,"sector":"Imobiliário"},{"code":"PRIO3","name":"PRIO ON","price":105.79,"change":3.81,"iv":53.23,"rank":94.9,"pct":76.7,"sector":"Mineração"},{"code":"RDOR3","name":"RDOR3 ON","price":113.62,"change":-4.02,"iv":55.94,"rank":1.2,"pct":82.6,"sector":"Bancos"},{"code":"PETR3","name":"PETR3 ON","price":121.45,"change":-2.65,"iv":58.65,"rank":8.5,"pct":88.5,"sector":"Petróleo"},{"code":"ALOS3","name":"ALOS3 ON","price":9.28,"change":-1.28,"iv":61.36,"rank":15.8,"pct":94.4,"sector":"Energia"},{"code":"UGPA3","name":"UGPA3 ON","price":17.11,"change":0.09,"iv":64.07,"rank":23.1,"pct":100.3,"sector":"Varejo"},{"code":"MGLU3","name":"MAGAZ LUIZA ON","price":24.94,"change":1.46,"iv":66.78,"rank":30.4,"pct":5.2,"sector":"Tecnologia"},{"code":"CYRE3","name":"CYRELA REALT ON","price":32.77,"change":2.83,"iv":69.49,"rank":37.7,"pct":11.1,"sector":"Imobiliário"},{"code":"GGBR4","name":"GERDAU PN","price":40.6,"change":4.2,"iv":72.2,"rank":45.0,"pct":17.0,"sector":"Mineração"},{"code":"BPAC11","name":"BTGP BANCO UNT","price":48.43,"change":-3.63,"iv":74.91,"rank":52.3,"pct":22.9,"sector":"Bancos"},{"code":"ABEV3","name":"AMBEV S/A ON","price":56.26,"change":-2.26,"iv":19.62,"rank":59.6,"pct":28.8,"sector":"Petróleo"},{"code":"HAPV3","name":"HAPVIDA ON","price":64.09,"change":-0.89,"iv":22.33,"rank":66.9,"pct":34.7,"sector":"Energia"},{"code":"B3SA3","name":"B3 ON","price":71.92,"change":0.48,"iv":25.04,"rank":74.2,"pct":40.6,"sector":"Varejo"},{"code":"SUZB3","name":"SUZANO S.A. ON","price":79.75,"change":1.85,"iv":27.75,"rank":81.5,"pct":46.5,"sector":"Tecnologia"},{"code":"AZZA3","name":"AZZA3 ON","price":87.58,"change":3.22,"iv":30.46,"rank":88.8,"pct":52.4,"sector":"Imobiliário"},{"code":"LREN3","name":"LOJAS RENNER ON","price":95.41,"change":-4.61,"iv":33.17,"rank":96.1,"pct":58.3,"sector":"Mineração"},{"code":"TOTS3","name":"TOTVS ON","price":103.24,"change":-3.24,"iv":35.88,"rank":2.4,"pct":64.2,"sector":"Bancos"},{"code":"SMAL11","name":"ISHARES SMAL CI","price":111.07,"change":-1.87,"iv":38.59,"rank":9.7,"pct":70.1,"sector":"Petróleo"},{"code":"BEEF3","name":"BEEF3 ON","price":118.9,"change":-0.5,"iv":41.3,"rank":17.0,"pct":76.0,"sector":"Energia"},{"code":"SBFG3","name":"SBFG3 ON","price":6.73,"change":0.87,"iv":44.01,"rank":24.3,"pct":81.9,"sector":"Varejo"},{"code":"USIM5","name":"USIM5 ON","price":14.56,"change":2.24,"iv":46.72,"rank":31.6,"pct":87.8,"sector":"Tecnologia"},{"code":"CSAN3","name":"CSAN3 ON","price":22.39,"change":3.61,"iv":49.43,"rank":38.9,"pct":93.7,"sector":"Imobiliário"},{"code":"MOTV3","name":"MOTV3 ON","price":30.22,"change":-4.22,"iv":52.14,"rank":46.2,"pct":99.6,"sector":"Mineração"},{"code":"AXIA3","name":"AXIA3 ON","price":38.05,"change":-2.85,"iv":54.85,"rank":53.5,"pct":4.5,"sector":"Bancos"},{"code":"AURA33","name":"AURA33 ON","price":45.88,"change":-1.48,"iv":57.56,"rank":60.8,"pct":10.4,"sector":"Petróleo"},{"code":"MOVI3","name":"MOVI3 ON","price":53.71,"change":-0.11,"iv":60.27,"rank":68.1,"pct":16.3,"sector":"Energia"},{"code":"VBBR3","name":"VBBR3 ON","price":61.54,"change":1.26,"iv":62.98,"rank":75.4,"pct":22.2,"sector":"Varejo"},{"code":"ONCO3","name":"ONCO3 ON","price":69.37,"change":2.63,"iv":65.69,"rank":82.7,"pct":28.1,"sector":"Tecnologia"},{"code":"ITSA4","name":"ITAUSA PN","price":77.2,"change":4.0,"iv":68.4,"rank":90.0,"pct":34.0,"sector":"Imobiliário"},{"code":"CSNA3","name":"SID NACIONAL ON","price":85.03,"change":-3.83,"iv":71.11,"rank":97.3,"pct":39.9,"sector":"Mineração"},{"code":"NATU3","name":"NATU3 ON","price":92.86,"change":-2.46,"iv":73.82,"rank":3.6,"pct":45.8,"sector":"Bancos"},{"code":"SBSP3","name":"SBSP3 ON","price":100.69,"change":-1.09,"iv":18.53,"rank":10.9,"pct":51.7,"sector":"Petróleo"},{"code":"COGN3","name":"COGN3 ON","price":108.52,"change":0.28,"iv":21.24,"rank":18.2,"pct":57.6,"sector":"Energia"},{"code":"EQTL3","name":"EQUATORIAL ON","price":116.35,"change":1.65,"iv":23.95,"rank":25.5,"pct":63.5,"sector":"Varejo"},{"code":"BBSE3","name":"BBSE3 ON","price":4.18,"change":3.02,"iv":26.66,"rank":32.8,"pct":69.4,"sector":"Tecnologia"},{"code":"SEER3","name":"SEER3 ON","price":12.01,"change":4.39,"iv":29.37,"rank":40.1,"pct":75.3,"sector":"Imobiliário"},{"code":"GOLD11","name":"GOLD11 ON","price":19.84,"change":-3.44,"iv":32.08,"rank":47.4,"pct":81.2,"sector":"Mineração"},{"code":"QUAL3","name":"QUAL3 ON","price":27.67,"change":-2.07,"iv":34.79,"rank":54.7,"pct":87.1,"sector":"Bancos"},{"code":"CPLE3","name":"CPLE3 ON","price":35.5,"change":-0.7,"iv":37.5,"rank":62.0,"pct":93.0,"sector":"Petróleo"},{"code":"ITUB3","name":"ITAUUNIBANCO ON","price":43.33,"change":0.67,"iv":40.21,"rank":69.3,"pct":98.9,"sector":"Energia"},{"code":"IRBR3","name":"IRBR3 ON","price":51.16,"change":2.04,"iv":42.92,"rank":76.6,"pct":3.8,"sector":"Varejo"},{"code":"MRVE3","name":"MRVE3 ON","price":58.99,"change":3.41,"iv":45.63,"rank":83.9,"pct":9.7,"sector":"Tecnologia"},{"code":"BRAP4","name":"BRAP4 ON","price":66.82,"change":-4.42,"iv":48.34,"rank":91.2,"pct":15.6,"sector":"Imobiliário"},{"code":"RAIZ4","name":"RAIZ4 ON","price":74.65,"change":-3.05,"iv":51.05,"rank":98.5,"pct":21.5,"sector":"Mineração"},{"code":"JBSS32","name":"JBSS32 ON","price":82.48,"change":-1.68,"iv":53.76,"rank":4.8,"pct":27.4,"sector":"Bancos"},{"code":"ASAI3","name":"ASAI3 ON","price":90.31,"change":-0.31,"iv":56.47,"rank":12.1,"pct":33.3,"sector":"Petróleo"},{"code":"MBRF3","name":"MBRF3 ON","price":98.14,"change":1.06,"iv":59.18,"rank":19.4,"pct":39.2,"sector":"Energia"},{"code":"ORVR3","name":"ORVR3 ON","price":105.97,"change":2.43,"iv":61.89,"rank":26.7,"pct":45.1,"sector":"Varejo"},{"code":"EGIE3","name":"EGIE3 ON","price":113.8,"change":3.8,"iv":64.6,"rank":34.0,"pct":51.0,"sector":"Tecnologia"},{"code":"HYPE3","name":"HYPE3 ON","price":121.63,"change":-4.03,"iv":67.31,"rank":41.3,"pct":56.9,"sector":"Imobiliário"},{"code":"GOGL34","name":"GOGL34 ON","price":9.46,"change":-2.66,"iv":70.02,"rank":48.6,"pct":62.8,"sector":"Mineração"},{"code":"TAEE11","name":"TAESA UNT","price":17.29,"change":-1.29,"iv":72.73,"rank":55.9,"pct":68.7,"sector":"Bancos"},{"code":"BOVX11","name":"BOVX11 ON","price":25.12,"change":0.08,"iv":75.44,"rank":63.2,"pct":74.6,"sector":"Petróleo"},{"code":"BRKM5","name":"BRKM5 ON","price":32.95,"change":1.45,"iv":20.15,"rank":70.5,"pct":80.5,"sector":"Energia"},{"code":"TEND3","name":"TEND3 ON","price":40.78,"change":2.82,"iv":22.86,"rank":77.8,"pct":86.4,"sector":"Varejo"},{"code":"BHIA3","name":"BHIA3 ON","price":48.61,"change":4.19,"iv":25.57,"rank":85.1,"pct":92.3,"sector":"Tecnologia"},{"code":"MILS3","name":"MILS3 ON","price":56.44,"change":-3.64,"iv":28.28,"rank":92.4,"pct":98.2,"sector":"Imobiliário"},{"code":"CVCB3","name":"CVCB3 ON","price":64.27,"change":-2.27,"iv":30.99,"rank":99.7,"pct":3.1,"sector":"Mineração"},{"code":"SIMH3","name":"SIMH3 ON","price":72.1,"change":-0.9,"iv":33.7,"rank":6.0,"pct":9.0,"sector":"Bancos"},{"code":"BBDC3","name":"BRADESCO ON","price":79.93,"change":0.47,"iv":36.41,"rank":13.3,"pct":14.9,"sector":"Petróleo"},{"code":"ENGI11","name":"ENGI11 ON","price":87.76,"change":1.84,"iv":39.12,"rank":20.6,"pct":20.8,"sector":"Energia"},{"code":"CMIG4","name":"CEMIG PN","price":95.59,"change":3.21,"iv":41.83,"rank":27.9,"pct":26.7,"sector":"Varejo"},{"code":"CXSE3","name":"CXSE3 ON","price":103.42,"change":-4.62,"iv":44.54,"rank":35.2,"pct":32.6,"sector":"Tecnologia"},{"code":"SMFT3","name":"SMFT3 ON","price":111.25,"change":-3.25,"iv":47.25,"rank":42.5,"pct":38.5,"sector":"Imobiliário"},{"code":"VAMO3","name":"VAMO3 ON","price":119.08,"change":-1.88,"iv":49.96,"rank":49.8,"pct":44.4,"sector":"Mineração"},{"code":"TIMS3","name":"TIM ON","price":6.91,"change":-0.51,"iv":52.67,"rank":57.1,"pct":50.3,"sector":"Bancos"},{"code":"GOAU4","name":"GOAU4 ON","price":14.74,"change":0.86,"iv":55.38,"rank":64.4,"pct":56.2,"sector":"Petróleo"},{"code":"AUAU3","name":"AUAU3 ON","price":22.57,"change":2.23,"iv":58.09,"rank":71.7,"pct":62.1,"sector":"Energia"},{"code":"MULT3","name":"MULT3 ON","price":30.4,"change":3.6,"iv":60.8,"rank":79.0,"pct":68.0,"sector":"Varejo"},{"code":"ISAE4","name":"ISAE4 ON","price":38.23,"change":-4.23,"iv":63.51,"rank":86.3,"pct":73.9,"sector":"Tecnologia"},{"code":"IVVB11","name":"IVVB11 ON","price":46.06,"change":-2.86,"iv":66.22,"rank":93.6,"pct":79.8,"sector":"Imobiliário"},{"code":"RAIL3","name":"RAIL3 ON","price":53.89,"change":-1.49,"iv":68.93,"rank":100.9,"pct":85.7,"sector":"Mineração"},{"code":"JHSF3","name":"JHSF3 ON","price":61.72,"change":-0.12,"iv":71.64,"rank":7.2,"pct":91.6,"sector":"Bancos"},{"code":"ROXO34","name":"ROXO34 ON","price":69.55,"change":1.25,"iv":74.35,"rank":14.5,"pct":97.5,"sector":"Petróleo"},{"code":"CEAB3","name":"CEAB3 ON","price":77.38,"change":2.62,"iv":19.06,"rank":21.8,"pct":2.4,"sector":"Energia"},{"code":"GGPS3","name":"GGPS3 ON","price":85.21,"change":3.99,"iv":21.77,"rank":29.1,"pct":8.3,"sector":"Varejo"},{"code":"ECOR3","name":"ECOR3 ON","price":93.04,"change":-3.84,"iv":24.48,"rank":36.4,"pct":14.2,"sector":"Tecnologia"},{"code":"PSSA3","name":"PSSA3 ON","price":100.87,"change":-2.47,"iv":27.19,"rank":43.7,"pct":20.1,"sector":"Imobiliário"},{"code":"SAPR11","name":"SAPR11 ON","price":108.7,"change":-1.1,"iv":29.9,"rank":51.0,"pct":26.0,"sector":"Mineração"},{"code":"MELI34","name":"MELI34 ON","price":116.53,"change":0.27,"iv":32.61,"rank":58.3,"pct":31.9,"sector":"Bancos"},{"code":"FLRY3","name":"FLRY3 ON","price":4.36,"change":1.64,"iv":35.32,"rank":65.6,"pct":37.8,"sector":"Petróleo"},{"code":"SANB11","name":"SANB11 ON","price":12.19,"change":3.01,"iv":38.03,"rank":72.9,"pct":43.7,"sector":"Energia"},{"code":"VIVA3","name":"VIVA3 ON","price":20.02,"change":4.38,"iv":40.74,"rank":80.2,"pct":49.6,"sector":"Varejo"},{"code":"KLBN11","name":"KLABIN S/A UNT","price":27.85,"change":-3.45,"iv":43.45,"rank":87.5,"pct":55.5,"sector":"Tecnologia"},{"code":"MDIA3","name":"MDIA3 ON","price":35.68,"change":-2.08,"iv":46.16,"rank":94.8,"pct":61.4,"sector":"Imobiliário"},{"code":"INBR32","name":"INBR32 ON","price":43.51,"change":-0.71,"iv":48.87,"rank":1.1,"pct":67.3,"sector":"Mineração"},{"code":"CPFE3","name":"CPFL ENERGIA ON","price":51.34,"change":0.66,"iv":51.58,"rank":8.4,"pct":73.2,"sector":"Bancos"},{"code":"RADL3","name":"RAIADROGASIL ON","price":59.17,"change":2.03,"iv":54.29,"rank":15.7,"pct":79.1,"sector":"Petróleo"},{"code":"NVDC34","name":"NVDC34 ON","price":67.0,"change":3.4,"iv":57.0,"rank":23.0,"pct":85.0,"sector":"Energia"},{"code":"EZTC3","name":"EZTC3 ON","price":74.83,"change":-4.43,"iv":59.71,"rank":30.3,"pct":90.9,"sector":"Varejo"},{"code":"CMIN3","name":"CMIN3 ON","price":82.66,"change":-3.06,"iv":62.42,"rank":37.6,"pct":96.8,"sector":"Tecnologia"},{"code":"LWSA3","name":"LWSA3 ON","price":90.49,"change":-1.69,"iv":65.13,"rank":44.9,"pct":1.7,"sector":"Imobiliário"},{"code":"VIVT3","name":"TELEF BRASIL ON","price":98.32,"change":-0.32,"iv":67.84,"rank":52.2,"pct":7.6,"sector":"Mineração"},{"code":"YDUQ3","name":"YDUQ3 ON","price":106.15,"change":1.05,"iv":70.55,"rank":59.5,"pct":13.5,"sector":"Bancos"},{"code":"DIRR3","name":"DIRR3 ON","price":113.98,"change":2.42,"iv":73.26,"rank":66.8,"pct":19.4,"sector":"Petróleo"},{"code":"RAPT4","name":"RAPT4 ON","price":121.81,"change":3.79,"iv":75.97,"rank":74.1,"pct":25.3,"sector":"Energia"},{"code":"PNVL3","name":"PNVL3 ON","price":9.64,"change":-4.04,"iv":20.68,"rank":81.4,"pct":31.2,"sector":"Varejo"},{"code":"M1TA34","name":"M1TA34 ON","price":17.47,"change":-2.67,"iv":23.39,"rank":88.7,"pct":37.1,"sector":"Tecnologia"},{"code":"GFSA3","name":"GFSA3 ON","price":25.3,"change":-1.3,"iv":26.1,"rank":96.0,"pct":43.0,"sector":"Imobiliário"},{"code":"CBAV3","name":"CBAV3 ON","price":33.13,"change":0.07,"iv":28.81,"rank":2.3,"pct":48.9,"sector":"Mineração"},{"code":"AMZO34","name":"AMZO34 ON","price":40.96,"change":1.44,"iv":31.52,"rank":9.6,"pct":54.8,"sector":"Bancos"},{"code":"SAUD3","name":"SAUD3 ON","price":48.79,"change":2.81,"iv":34.23,"rank":16.9,"pct":60.7,"sector":"Petróleo"},{"code":"ARML3","name":"ARML3 ON","price":56.62,"change":4.18,"iv":36.94,"rank":24.2,"pct":66.6,"sector":"Energia"},{"code":"IGTI11","name":"IGTI11 ON","price":64.45,"change":-3.65,"iv":39.65,"rank":31.5,"pct":72.5,"sector":"Varejo"},{"code":"CURY3","name":"CURY3 ON","price":72.28,"change":-2.28,"iv":42.36,"rank":38.8,"pct":78.4,"sector":"Tecnologia"},{"code":"SMTO3","name":"SMTO3 ON","price":80.11,"change":-0.91,"iv":45.07,"rank":46.1,"pct":84.3,"sector":"Imobiliário"},{"code":"MSFT34","name":"MSFT34 ON","price":87.94,"change":0.46,"iv":47.78,"rank":53.4,"pct":90.2,"sector":"Mineração"},{"code":"POMO4","name":"POMO4 ON","price":95.77,"change":1.83,"iv":50.49,"rank":60.7,"pct":96.1,"sector":"Bancos"},{"code":"TTEN3","name":"TTEN3 ON","price":103.6,"change":3.2,"iv":53.2,"rank":68.0,"pct":1.0,"sector":"Petróleo"},{"code":"MYPK3","name":"MYPK3 ON","price":111.43,"change":-4.63,"iv":55.91,"rank":75.3,"pct":6.9,"sector":"Energia"},{"code":"BRSR6","name":"BRSR6 ON","price":119.26,"change":-3.26,"iv":58.62,"rank":82.6,"pct":12.8,"sector":"Varejo"},{"code":"XPBR31","name":"XPBR31 ON","price":7.09,"change":-1.89,"iv":61.33,"rank":89.9,"pct":18.7,"sector":"Tecnologia"},{"code":"GMAT3","name":"GMAT3 ON","price":14.92,"change":-0.52,"iv":64.04,"rank":97.2,"pct":24.6,"sector":"Imobiliário"},{"code":"RECV3","name":"RECV3 ON","price":22.75,"change":0.85,"iv":66.75,"rank":3.5,"pct":30.5,"sector":"Mineração"},{"code":"TSMC34","name":"TSMC34 ON","price":30.58,"change":2.22,"iv":69.46,"rank":10.8,"pct":36.4,"sector":"Bancos"},{"code":"SLCE3","name":"SLCE3 ON","price":38.41,"change":3.59,"iv":72.17,"rank":18.1,"pct":42.3,"sector":"Petróleo"},{"code":"AURE3","name":"AURE3 ON","price":46.24,"change":-4.24,"iv":74.88,"rank":25.4,"pct":48.2,"sector":"Energia"},{"code":"ANIM3","name":"ANIM3 ON","price":54.07,"change":-2.87,"iv":19.59,"rank":32.7,"pct":54.1,"sector":"Varejo"},{"code":"TUPY3","name":"TUPY3 ON","price":61.9,"change":-1.5,"iv":22.3,"rank":40.0,"pct":60.0,"sector":"Tecnologia"},{"code":"ALPA4","name":"ALPA4 ON","price":69.73,"change":-0.13,"iv":25.01,"rank":47.3,"pct":65.9,"sector":"Imobiliário"},{"code":"LEVE3","name":"LEVE3 ON","price":77.56,"change":1.24,"iv":27.72,"rank":54.6,"pct":71.8,"sector":"Mineração"},{"code":"UNIP6","name":"UNIP6 ON","price":85.39,"change":2.61,"iv":30.43,"rank":61.9,"pct":77.7,"sector":"Bancos"},{"code":"LJQQ3","name":"LJQQ3 ON","price":93.22,"change":3.98,"iv":33.14,"rank":69.2,"pct":83.6,"sector":"Petróleo"},{"code":"INTB3","name":"INTB3 ON","price":101.05,"change":-3.85,"iv":35.85,"rank":76.5,"pct":89.5,"sector":"Energia"},{"code":"SOJA3","name":"SOJA3 ON","price":108.88,"change":-2.48,"iv":38.56,"rank":83.8,"pct":95.4,"sector":"Varejo"},{"code":"BMOB3","name":"BMOB3 ON","price":116.71,"change":-1.11,"iv":41.27,"rank":91.1,"pct":0.3,"sector":"Tecnologia"},{"code":"POSI3","name":"POSI3 ON","price":4.54,"change":0.26,"iv":43.98,"rank":98.4,"pct":6.2,"sector":"Imobiliário"},{"code":"DXCO3","name":"DXCO3 ON","price":12.37,"change":1.63,"iv":46.69,"rank":4.7,"pct":12.1,"sector":"Mineração"},{"code":"KEPL3","name":"KEPL3 ON","price":20.2,"change":3.0,"iv":49.4,"rank":12.0,"pct":18.0,"sector":"Bancos"},{"code":"GRND3","name":"GRND3 ON","price":28.03,"change":4.37,"iv":52.11,"rank":19.3,"pct":23.9,"sector":"Petróleo"},{"code":"VULC3","name":"VULC3 ON","price":35.86,"change":-3.46,"iv":54.82,"rank":26.6,"pct":29.8,"sector":"Energia"},{"code":"SPCX34","name":"SPCX34 ON","price":43.69,"change":-2.09,"iv":57.53,"rank":33.9,"pct":35.7,"sector":"Varejo"},{"code":"MDNE3","name":"MDNE3 ON","price":51.52,"change":-0.72,"iv":60.24,"rank":41.2,"pct":41.6,"sector":"Tecnologia"},{"code":"TSLA34","name":"TSLA34 ON","price":59.35,"change":0.65,"iv":62.95,"rank":48.5,"pct":47.5,"sector":"Imobiliário"},{"code":"ALUP11","name":"ALUP11 ON","price":67.18,"change":2.02,"iv":65.66,"rank":55.8,"pct":53.4,"sector":"Mineração"},{"code":"RIAA3","name":"RIAA3 ON","price":75.01,"change":3.39,"iv":68.37,"rank":63.1,"pct":59.3,"sector":"Bancos"},{"code":"ITLC34","name":"ITLC34 ON","price":82.84,"change":-4.44,"iv":71.08,"rank":70.4,"pct":65.2,"sector":"Petróleo"},{"code":"CPLE99","name":"CPLE99 ON","price":90.67,"change":-3.07,"iv":73.79,"rank":77.7,"pct":71.1,"sector":"Energia"},{"code":"WIZC3","name":"WIZC3 ON","price":98.5,"change":-1.7,"iv":18.5,"rank":85.0,"pct":77.0,"sector":"Varejo"},{"code":"HBOR3","name":"HBOR3 ON","price":106.33,"change":-0.33,"iv":21.21,"rank":92.3,"pct":82.9,"sector":"Tecnologia"},{"code":"BMGB4","name":"BMGB4 ON","price":114.16,"change":1.04,"iv":23.92,"rank":99.6,"pct":88.8,"sector":"Imobiliário"},{"code":"AMBP3","name":"AMBP3 ON","price":121.99,"change":2.41,"iv":26.63,"rank":5.9,"pct":94.7,"sector":"Mineração"},{"code":"PCAR3","name":"PCAR3 ON","price":9.82,"change":3.78,"iv":29.34,"rank":13.2,"pct":100.6,"sector":"Bancos"}];
 const $=id=>document.getElementById(id);
-const legs=$('legs');
-let mode='expiry', rows=[];
-const today=new Date();
-const iso=d=>d.toISOString().slice(0,10);
-let exp=new Date(); exp.setDate(exp.getDate()+60); $('expiry').value=iso(exp);
+const fmt=(x,d=2)=>Number(x).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=x=>(x<0?'-':'')+'R$ '+Math.abs(x).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function parseBR(v){return Number(String(v).replace(/\s/g,'').replace(/\./g,'').replace(',','.'))||0}
+function uid(){return 'r'+Date.now()+Math.random().toString(16).slice(2)}
+let selectedAsset=ASSETS.find(x=>x.code==='BOVA11')||ASSETS[0];
+let mode='expiry',rows=[];
 
-function addLeg(type='CALL', side='Compra', qty=1000, strike=15.03, premium=type==='CALL'?3.37:0.17){
-  const id=crypto.randomUUID();
-  rows.push({id,type,side,qty,strike,premium});
-  render();
+function nextFridays(n=12){
+ const out=[],d=new Date();d.setHours(12,0,0,0);
+ while(out.length<n){d.setDate(d.getDate()+1);if(d.getDay()===5)out.push(new Date(d))}
+ return out;
+}
+const expiries=nextFridays();
+function iso(d){return d.toISOString().slice(0,10)}
+function dmy(d){return d.toLocaleDateString('pt-BR')}
+function businessDays(target){
+ let d=new Date();d.setHours(12,0,0,0);let count=0;
+ while(d<target){d.setDate(d.getDate()+1);if(d.getDay()>0&&d.getDay()<6)count++}
+ return count;
+}
+function expiryOptions(selected){return expiries.map(d=>`<option value="${iso(d)}" ${iso(d)===selected?'selected':''}>${dmy(d)} · ${businessDays(d)} d.u.</option>`).join('')}
+
+function strikesFor(asset){
+ const p=asset.price||selectedAsset.price||20;
+ let step=p<20?1:p<50?2:p<100?5:10;
+ const center=Math.round(p/step)*step;
+ const arr=[];
+ for(let i=-6;i<=6;i++){const k=Math.max(step,center+i*step);if(!arr.includes(k))arr.push(k)}
+ return arr;
+}
+function strikeOptions(selected){
+ return strikesFor(selectedAsset).map(k=>`<option value="${k}" ${Math.abs(k-selected)<0.001?'selected':''}>${fmt(k)}</option>`).join('');
+}
+function optionCode(type,strike){
+ const base=(selectedAsset.code||'').replace(/[^A-Z0-9]/g,'').slice(0,4);
+ const letter=type==='CALL'?'A':'M';
+ return base+letter+String(Math.round(Number(strike)*10)).padStart(3,'0');
+}
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x))}
+function N(x){return .5*(1+erf(x/Math.sqrt(2)))}
+function bs(S,K,T,sigma,r,type){
+ if(T<=0)return type==='CALL'?Math.max(S-K,0):Math.max(K-S,0);
+ if(sigma<=0)return type==='CALL'?Math.max(S-K*Math.exp(-r*T),0):Math.max(K*Math.exp(-r*T)-S,0);
+ const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T)),d2=d1-sigma*Math.sqrt(T);
+ return type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);
+}
+function optionPremium(r){
+ const S=parseBR($('spot').value),K=Number(r.strike),E=new Date(r.expiry+'T12:00:00'),now=new Date();
+ const T=Math.max(0,(E-now)/86400000/365),sig=parseBR($('vol').value)/100,rate=parseBR($('rate').value)/100;
+ return bs(S,K,T,sig,rate,r.type);
+}
+
+function initAssets(){
+ $('asset').innerHTML=ASSETS.map(a=>`<option value="${a.code}">${a.code} — ${a.name}</option>`).join('');
+ $('asset').value=selectedAsset.code;
+ $('expiry').innerHTML=expiryOptions(iso(expiries[0]));
+ updateAssetFields();
+}
+function updateAssetFields(){
+ selectedAsset=ASSETS.find(x=>x.code===$('asset').value)||selectedAsset;
+ $('spot').value=fmt(selectedAsset.price,2);
+ $('vol').value=fmt(selectedAsset.iv,2);
+ $('assetName').textContent=selectedAsset.name;
+ $('assetVol').textContent=fmt(selectedAsset.iv,2)+'%';
+ $('assetSector').textContent=selectedAsset.sector;
+ rows.forEach(r=>{if(r.type==='ATIVO')r.entry=parseBR($('spot').value);else{r.strike=closestStrike(r.strike);r.premium=optionPremium(r)}});
+ render();
+}
+function closestStrike(v){const a=strikesFor(selectedAsset);return a.reduce((p,c)=>Math.abs(c-v)<Math.abs(p-v)?c:p,a[0])}
+function addLeg(type='CALL',side='Compra',qty=1000,strike=null,premium=null){
+ const r={id:uid(),type,side,qty,expiry:iso(expiries[0]),strike:strike==null?closestStrike(parseBR($('spot').value)):strike,premium:premium};
+ if(type==='ATIVO')r.entry=parseBR($('spot').value);
+ else if(r.premium==null)r.premium=optionPremium(r);
+ rows.push(r);render();
 }
 function render(){
-  legs.innerHTML='';
-  rows.forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><button data-del="${r.id}">×</button></td>
-      <td><select data-k="side" data-id="${r.id}"><option ${r.side==='Compra'?'selected':''}>Compra</option><option ${r.side==='Venda'?'selected':''}>Venda</option></select></td>
-      <td><input data-k="qty" data-id="${r.id}" type="number" value="${r.qty}" min="1"></td>
-      <td><select data-k="type" data-id="${r.id}"><option ${r.type==='CALL'?'selected':''}>CALL</option><option ${r.type==='PUT'?'selected':''}>PUT</option></select></td>
-      <td><input data-k="strike" data-id="${r.id}" type="number" step="0.01" value="${r.strike}"></td>
-      <td><input data-k="premium" data-id="${r.id}" type="number" step="0.01" value="${r.premium}"></td>`;
-    legs.appendChild(tr);
-  });
-  calc();
+ $('legs').innerHTML=rows.map(r=>{
+  const isAsset=r.type==='ATIVO';
+  const code=isAsset?selectedAsset.code:optionCode(r.type,r.strike);
+  const price=isAsset?r.entry:r.premium;
+  return `<tr class="${isAsset?'asset-row':''}">
+   <td><button data-del="${r.id}" title="Excluir">×</button></td>
+   <td><select data-k="side" data-id="${r.id}"><option ${r.side==='Compra'?'selected':''}>Compra</option><option ${r.side==='Venda'?'selected':''}>Venda</option></select></td>
+   <td><input data-k="qty" data-id="${r.id}" inputmode="numeric" value="${r.qty}"></td>
+   <td><select data-k="type" data-id="${r.id}"><option ${r.type==='ATIVO'?'selected':''}>ATIVO</option><option ${r.type==='CALL'?'selected':''}>CALL</option><option ${r.type==='PUT'?'selected':''}>PUT</option></select></td>
+   <td><select data-k="expiry" data-id="${r.id}" ${isAsset?'disabled':''}>${expiryOptions(r.expiry)}</select></td>
+   <td>${isAsset?'<span class="readonly">—</span>':`<select data-k="strike" data-id="${r.id}">${strikeOptions(r.strike)}</select>`}</td>
+   <td><input class="readonly" value="${code}" readonly></td>
+   <td><input data-k="${isAsset?'entry':'premium'}" data-id="${r.id}" inputmode="decimal" value="${fmt(price, isAsset?2:4)}"></td>
+  </tr>`;
+ }).join('');
+ calc();
 }
-legs.addEventListener('input',e=>{
-  const id=e.target.dataset.id,k=e.target.dataset.k;if(!id||!k)return;
-  const r=rows.find(x=>x.id===id); r[k]=(k==='side'||k==='type')?e.target.value:Number(e.target.value); calc();
+$('legs').addEventListener('change',e=>{
+ const id=e.target.dataset.id,k=e.target.dataset.k;if(!id||!k)return;
+ const r=rows.find(x=>x.id===id);if(!r)return;
+ if(k==='side'||k==='type'||k==='expiry')r[k]=e.target.value;
+ else if(k==='qty')r.qty=Math.max(1,Math.round(parseBR(e.target.value)));
+ else if(k==='strike')r.strike=Number(e.target.value);
+ else if(k==='premium'||k==='entry')r[k]=parseBR(e.target.value);
+ if(k==='type'){if(r.type==='ATIVO')r.entry=parseBR($('spot').value);else{r.strike=closestStrike(r.strike);r.premium=optionPremium(r)}}
+ if(k==='expiry'||k==='strike'){if(r.type!=='ATIVO')r.premium=optionPremium(r)}
+ render();
 });
-legs.addEventListener('click',e=>{const id=e.target.dataset.del;if(id){rows=rows.filter(r=>r.id!==id);render()}});
-$('addCall').onclick=()=>addLeg('CALL','Compra',1000,15.03,3.37);
-$('addPut').onclick=()=>addLeg('PUT','Venda',1000,15.03,0.17);
+$('legs').addEventListener('input',e=>{
+ const id=e.target.dataset.id,k=e.target.dataset.k;if(!id||!k)return;
+ const r=rows.find(x=>x.id===id);if(!r)return;
+ if(k==='qty')r.qty=Math.max(1,Math.round(parseBR(e.target.value)));
+ if(k==='premium')r.premium=parseBR(e.target.value);
+ if(k==='entry')r.entry=parseBR(e.target.value);
+ calc();
+});
+$('legs').addEventListener('click',e=>{const id=e.target.dataset.del;if(id){rows=rows.filter(r=>r.id!==id);render()}});
+$('asset').onchange=updateAssetFields;
+$('spot').addEventListener('input',()=>{selectedAsset.price=parseBR($('spot').value);rows.forEach(r=>{if(r.type==='ATIVO')r.entry=parseBR($('spot').value);else r.premium=optionPremium(r)});calc()});
+$('expiry').onchange=()=>{rows.forEach(r=>{if(r.type!=='ATIVO'){r.expiry=$('expiry').value;r.strike=closestStrike(r.strike);r.premium=optionPremium(r)}});render()};
+$('vol').addEventListener('input',()=>{rows.forEach(r=>{if(r.type!=='ATIVO')r.premium=optionPremium(r)});calc()});
+$('rate').addEventListener('input',calc);
+
+$('addCall').onclick=()=>addLeg('CALL','Compra',1000);
+$('addPut').onclick=()=>addLeg('PUT','Venda',1000);
+$('addAsset').onclick=()=>addLeg('ATIVO','Compra',1000);
 $('clear').onclick=()=>{rows=[];render()};
-$('example').onclick=()=>{rows=[];addLeg('CALL','Compra',1000,15.03,3.37);addLeg('PUT','Venda',1000,15.03,0.17);};
-['spot','expiry','vol','rate'].forEach(id=>$(id).addEventListener('input',calc));
+$('example').onclick=()=>{rows=[];addLeg('ATIVO','Compra',1000);addLeg('CALL','Compra',1000);addLeg('PUT','Venda',1000)};
+
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;calc()});
 
-function payoff(S, t){
-  let total=0;
-  for(const r of rows){
-    let intrinsic=r.type==='CALL'?Math.max(S-r.strike,0):Math.max(r.strike-S,0);
-    let val;
-    if(t<=0) val=intrinsic;
-    else val=optionPrice(S,r.strike,t,Number($('vol').value)/100,Number($('rate').value)/100,r.type);
-    const pnl=(r.side==='Compra'?1:-1)*(val-r.premium)*r.qty;
-    total+=pnl;
+function payoff(S,t){
+ let total=0;
+ for(const r of rows){
+  const side=r.side==='Compra'?1:-1;
+  let pnl=0;
+  if(r.type==='ATIVO')pnl=(S-r.entry)*r.qty;
+  else{
+   const intrinsic=r.type==='CALL'?Math.max(S-r.strike,0):Math.max(r.strike-S,0);
+   const val=t<=0?intrinsic:optionPrice(S,r.strike,t,parseBR($('vol').value)/100,parseBR($('rate').value)/100,r.type);
+   pnl=side*(val-r.premium)*r.qty;
   }
-  return total;
+  if(r.type==='ATIVO')pnl*=side;
+  total+=pnl;
+ }
+ return total;
 }
 function optionPrice(S,K,T,sigma,r,type){
-  if(T<=0)return type==='CALL'?Math.max(S-K,0):Math.max(K-S,0);
-  const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T));
-  const d2=d1-sigma*Math.sqrt(T);
-  const N=x=>0.5*(1+erf(x/Math.sqrt(2)));
-  return type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);
+ if(T<=0)return type==='CALL'?Math.max(S-K,0):Math.max(K-S,0);
+ if(sigma<=0)return type==='CALL'?Math.max(S-K*Math.exp(-r*T),0):Math.max(K*Math.exp(-r*T)-S,0);
+ const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T)),d2=d1-sigma*Math.sqrt(T);
+ return type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);
 }
-function erf(x){const s=x<0?-1:1; x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911;const t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x));}
-
 function calc(){
-  const S=Number($('spot').value)||0, E=new Date($('expiry').value||iso(exp)), now=new Date();
-  let T=Math.max(0,(E-now)/86400000/365);
-  if(mode==='expiry')T=0;
-  else if(mode==='7d')T=Math.max(0,T-7/365);
-  else if(mode==='30d')T=Math.max(0,T-30/365);
-  const strikes=rows.map(r=>r.strike).filter(Boolean);
-  const center=S||strikes[0]||20, minX=Math.max(.01,Math.min(...(strikes.length?strikes:[center]))*.55), maxX=Math.max(...(strikes.length?strikes:[center]))*1.45;
-  const xs=[],ys=[]; for(let i=0;i<121;i++){const x=minX+(maxX-minX)*i/120;xs.push(x);ys.push(payoff(x,T))}
-  const pnow=payoff(S,T);$('pnlNow').textContent=money(pnow);
-  $('max').textContent=money(Math.max(...ys));$('min').textContent=money(Math.min(...ys));
-  const bes=[];for(let i=1;i<ys.length;i++)if(ys[i-1]===0||ys[i]===0||(ys[i-1]<0)!=(ys[i]<0)){const x=xs[i-1]+(xs[i]-xs[i-1])*(0-ys[i-1])/(ys[i]-ys[i-1]);bes.push(x.toFixed(2))}
-  $('be').textContent=bes.length?bes.join(', '):'—';draw(xs,ys,S);
+ const S=parseBR($('spot').value),E=new Date($('expiry').value||expiries[0]),now=new Date();
+ let T=Math.max(0,(E-now)/86400000/365);
+ if(mode==='expiry')T=0;else if(mode==='7d')T=Math.max(0,T-7/365);else if(mode==='30d')T=Math.max(0,T-30/365);
+ const strikes=rows.map(r=>r.strike).filter(Boolean),center=S||strikes[0]||20;
+ const minX=Math.max(.01,Math.min(...(strikes.length?strikes:[center]))*.55),maxX=Math.max(...(strikes.length?strikes:[center]))*1.45;
+ const xs=[],ys=[];for(let i=0;i<121;i++){const x=minX+(maxX-minX)*i/120;xs.push(x);ys.push(payoff(x,T))}
+ const pnow=payoff(S,T);$('pnlNow').textContent=money(pnow);$('max').textContent=money(Math.max(...ys));$('min').textContent=money(Math.min(...ys));
+ const bes=[];for(let i=1;i<ys.length;i++)if(ys[i-1]===0||ys[i]===0||(ys[i-1]<0)!=(ys[i]<0)){const den=ys[i]-ys[i-1];bes.push(den?xs[i-1]+(xs[i]-xs[i-1])*(0-ys[i-1])/den:xs[i])}
+ $('be').textContent=bes.length?bes.map(x=>fmt(x)).join(', '):'—';draw(xs,ys,S);
 }
-function money(v){return (v<0?'-':'')+'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-
 function draw(xs,ys,S){
  const c=$('chart'),dpr=devicePixelRatio||1,rect=c.getBoundingClientRect();c.width=rect.width*dpr;c.height=rect.height*dpr;
- const ctx=c.getContext('2d');ctx.scale(dpr,dpr);const W=rect.width,H=rect.height,p=55;
+ const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=rect.width,H=rect.height,p=55;
  ctx.fillStyle='#0b121a';ctx.fillRect(0,0,W,H);
  const xmin=xs[0],xmax=xs[xs.length-1],ymin=Math.min(...ys),ymax=Math.max(...ys),yr=(ymax-ymin)||1;
  const X=x=>p+(x-xmin)/(xmax-xmin)*(W-p-20),Y=y=>H-p-(y-ymin)/yr*(H-p-20);
  ctx.font='12px Arial';ctx.strokeStyle='#24313d';ctx.fillStyle='#93a8bb';ctx.lineWidth=1;
- for(let i=0;i<=8;i++){let x=p+(W-p-20)*i/8;ctx.beginPath();ctx.moveTo(x,20);ctx.lineTo(x,H-p);ctx.stroke();ctx.fillText((xmin+(xmax-xmin)*i/8).toFixed(2),x-15,H-25)}
+ for(let i=0;i<=8;i++){let x=p+(W-p-20)*i/8;ctx.beginPath();ctx.moveTo(x,20);ctx.lineTo(x,H-p);ctx.stroke();ctx.fillText(fmt(xmin+(xmax-xmin)*i/8),x-15,H-25)}
  for(let i=0;i<=6;i++){let y=20+(H-p-20)*i/6;ctx.beginPath();ctx.moveTo(p,y);ctx.lineTo(W-20,y);ctx.stroke();let val=ymax-yr*i/6;ctx.fillText(money(val).replace('R$ ',''),5,y+4)}
  if(ymin<0&&ymax>0){ctx.strokeStyle='#8797a5';ctx.beginPath();ctx.moveTo(p,Y(0));ctx.lineTo(W-20,Y(0));ctx.stroke()}
  ctx.strokeStyle='#65a9ff';ctx.lineWidth=3;ctx.beginPath();xs.forEach((x,i)=>i?ctx.lineTo(X(x),Y(ys[i])):ctx.moveTo(X(x),Y(ys[i])));ctx.stroke();
- if(S>=xmin&&S<=xmax){ctx.strokeStyle='#d9b75a';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(X(S),20);ctx.lineTo(X(S),H-p);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#e2c66c';ctx.fillText('Preço atual '+S.toFixed(2),X(S)+5,34)}
+ if(S>=xmin&&S<=xmax){ctx.strokeStyle='#d9b75a';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(X(S),20);ctx.lineTo(X(S),H-p);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#e2c66c';ctx.fillText('Preço atual '+fmt(S),X(S)+5,34)}
  ctx.fillStyle='#dce6ef';ctx.font='bold 15px Arial';ctx.fillText('P&L da estratégia',p,18);
 }
-addLeg('CALL','Compra',1000,15.03,3.37); addLeg('PUT','Venda',1000,15.03,0.17);
+initAssets();
+addLeg('CALL','Compra',1000);
 window.addEventListener('resize',calc);
 </script>
 </body>

@@ -59,22 +59,19 @@ footer{padding:24px 34px;border-top:1px solid #263340;color:#70859a;margin-top:2
 <div class="row"><label><input type="radio" name="start" value="code" checked> Código da opção</label><input id="code" class="codebox" placeholder=""></div>
 <div class="row"><label><input type="radio" name="start" value="free"> Simular livremente</label><span><label><input type="radio" name="type" value="CALL" checked> CALL</label> &nbsp; <label><input type="radio" name="type" value="PUT"> PUT</label></span></div>
 </fieldset>
-
-<div class="two"><label>Strike</label><input id="strike" type="number" step="0.01" value="15.03"></div>
+<div class="two"><label>Strike</label><input id="strike" inputmode="decimal" value="15,03"></div>
 <div class="two"><label>Vencimento</label><input id="expiry" type="date"></div>
-<div class="two"><label>Taxa de juros (a.a.)</label><input id="rate" type="number" step="0.01" value="13.75"></div>
+<div class="two"><label>Taxa de juros (a.a.)</label><input id="rate" inputmode="decimal" value="13,75"></div>
 <div class="two"><label>Data referência</label><input id="ref" type="date"></div>
-<div class="two"><label>Dias úteis para venc.</label><input id="days" type="number" min="0" placeholder=""></div>
-
+<div class="two"><label>Dias úteis para venc.</label><input id="days" inputmode="numeric" placeholder=""></div>
 <div class="subbox">
 <div class="subbox-title">Selecione o item a calcular e informe os demais</div>
-<div class="subrow"><label><input type="radio" name="target" value="spot"> Preço da ação</label><input id="spot" type="number" step="0.01" value="17.99"></div>
-<div class="subrow"><label><input type="radio" name="target" value="vol"> Volatilidade impl.</label><input id="vol" type="number" step="0.01" value="34"></div>
-<div class="subrow"><label><input type="radio" name="target" value="premium" checked> Prêmio da opção</label><input id="premium" type="number" step="0.0001" placeholder=""></div>
+<div class="subrow"><label><input type="radio" name="target" value="spot"> Preço da ação</label><input id="spot" inputmode="decimal" value="17,99"></div>
+<div class="subrow"><label><input type="radio" name="target" value="vol"> Volatilidade impl.</label><input id="vol" inputmode="decimal" value="34,00"></div>
+<div class="subrow"><label><input type="radio" name="target" value="premium" checked> Prêmio da opção</label><input id="premium" inputmode="decimal" placeholder=""></div>
 <div class="actions"><button class="btn primary" id="calculate">Calcular</button></div>
 </div>
 </section>
-
 <section class="card result">
 <h2>Resultado</h2>
 <div class="big" id="mainResult">Prêmio da opção: —</div>
@@ -93,9 +90,13 @@ footer{padding:24px 34px;border-top:1px solid #263340;color:#70859a;margin-top:2
 <footer>B3Options · Calculadora Black-Scholes · Uso educacional.</footer>
 <script>
 const $=id=>document.getElementById(id);
-const today=new Date(); const iso=d=>d.toISOString().slice(0,10);
-const exp=new Date(today); exp.setDate(exp.getDate()+41);
-$('ref').value=iso(today); $('expiry').value=iso(exp);
+const today=new Date();
+const iso=d=>d.toISOString().slice(0,10);
+const br=x=>Number(x).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:4});
+const money=x=>x.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:4});
+function num(id){return Number(String($(id).value).replace(/\./g,'').replace(',','.'))}
+const exp=new Date(today);exp.setDate(exp.getDate()+41);
+$('ref').value=iso(today);$('expiry').value=iso(exp);
 
 function erf(x){const s=x<0?-1:1;x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x))}
 function N(x){return .5*(1+erf(x/Math.sqrt(2)))}
@@ -106,33 +107,33 @@ function bs(S,K,T,sigma,r,type){
  return type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);
 }
 function timeYears(){
- const days=Number($('days').value);
+ const days=num('days');
  if(days>0)return days/252;
  const a=new Date($('ref').value+'T12:00:00'),b=new Date($('expiry').value+'T12:00:00');
  return Math.max(0,(b-a)/86400000/365);
 }
 function calculate(){
- let S=+$('spot').value,K=+$('strike').value,r=+$('rate').value/100,sigma=+$('vol').value/100,T=timeYears();
+ let S=num('spot'),K=num('strike'),r=num('rate')/100,sigma=num('vol')/100,T=timeYears();
  const type=document.querySelector('input[name=type]:checked').value,target=document.querySelector('input[name=target]:checked').value;
  if(!(K>0&&T>=0)){alert('Informe strike e vencimento/data de referência.');return}
  if(target==='premium'){
    if(!(S>0&&sigma>0)){alert('Para calcular o prêmio, informe preço da ação e volatilidade.');return}
-   const p=bs(S,K,T,sigma,r,type); $('premium').value=p.toFixed(4); $('mainResult').textContent='Prêmio da opção: R$ '+p.toFixed(4);
- } else if(target==='spot'){
-   const p=+$('premium').value;
+   const p=bs(S,K,T,sigma,r,type);$('premium').value=br(p);$('mainResult').textContent='Prêmio da opção: '+money(p);
+ }else if(target==='spot'){
+   const p=num('premium');
    if(!(p>=0&&sigma>0)){alert('Informe prêmio e volatilidade.');return}
    let lo=.0001,hi=Math.max(K*5,1000);
    for(let i=0;i<120;i++){const m=(lo+hi)/2,v=bs(m,K,T,sigma,r,type);if(type==='CALL'?(v<p):(v>p))lo=m;else hi=m}
-   S=(lo+hi)/2;$('spot').value=S.toFixed(4);$('mainResult').textContent='Preço da ação: R$ '+S.toFixed(4);
- } else {
-   const p=+$('premium').value;
+   S=(lo+hi)/2;$('spot').value=br(S);$('mainResult').textContent='Preço da ação: '+money(S);
+ }else{
+   const p=num('premium');
    if(!(S>0&&p>=0)){alert('Informe preço da ação e prêmio.');return}
    let lo=.000001,hi=5;
    for(let i=0;i<120;i++){const m=(lo+hi)/2,v=bs(S,K,T,m,r,type);if(v<p)lo=m;else hi=m}
-   sigma=(lo+hi)/2;$('vol').value=(sigma*100).toFixed(4);$('mainResult').textContent='Volatilidade implícita: '+(sigma*100).toFixed(4)+'%';
+   sigma=(lo+hi)/2;$('vol').value=br(sigma*100);$('mainResult').textContent='Volatilidade implícita: '+br(sigma*100)+'%';
  }
- $('rType').textContent=type;$('rSpot').textContent='R$ '+S.toFixed(4);$('rStrike').textContent='R$ '+K.toFixed(4);
- $('rVol').textContent=(sigma*100).toFixed(2)+'%';$('rTime').textContent=(T*365).toFixed(1)+' dias';$('rRate').textContent=(r*100).toFixed(2)+'%';
+ $('rType').textContent=type;$('rSpot').textContent=money(S);$('rStrike').textContent=money(K);
+ $('rVol').textContent=br(sigma*100)+'%';$('rTime').textContent=br(T*365)+' dias';$('rRate').textContent=br(r*100)+'%';
 }
 $('calculate').onclick=calculate;
 </script>
