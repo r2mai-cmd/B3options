@@ -1,131 +1,81 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>B3Options — Mercado de Opções</title>
-<style>
-:root{--bg:#070b10;--panel:#0e141c;--panel2:#111923;--line:#26313f;--muted:#7e91a8;--text:#eef4fb;--green:#2ee6a6;--red:#ff6474;--blue:#75a9ff;--white:#f4f7fb}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 500px at 80% 0%,#111d2c 0%,transparent 62%),var(--bg);color:var(--text);font:13px Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-.top{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:24px;background:#080c12;position:sticky;top:0;z-index:20}
-.brand{display:flex;align-items:center;gap:12px;min-width:270px}.logo{width:38px;height:38px;border-radius:11px;background:#e7eef6;color:#0b1119;display:grid;place-items:center;font-weight:900}.brand b{font-size:15px}.brand small{display:block;color:#71839a;font-size:9px;letter-spacing:1.4px;margin-top:2px}.market{margin-left:auto;color:#9fb0c5}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:9px}.icon{border:1px solid var(--line);background:#0d141d;color:#c9d6e5;border-radius:10px;width:36px;height:36px}.avatar{background:#e9eff6;color:#17202b;border:0;font-weight:800}
-.nav{height:51px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:30px;background:#0a0f15}.nav button{height:51px;border:0;background:none;color:#7f91a7;padding:0 3px;position:relative}.nav button.active{color:#fff}.nav button.active:after{content:"";height:2px;background:#eaf0f7;position:absolute;left:0;right:0;bottom:0}
-.wrap{max-width:1510px;margin:auto;padding:38px 34px 70px}.eyebrow{color:#8fa6bf;font-weight:800;letter-spacing:1.5px;font-size:10px}.hero{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}.hero h1{font-size:29px;margin:12px 0 6px;letter-spacing:-.7px}.hero p{margin:0;color:#8195ad}.ref{text-align:right;color:#71839a;font-size:10px}.ref b{display:block;color:#dce7f3;font-size:11px;margin-top:7px}
-.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}.metric{background:linear-gradient(180deg,#111821,#0d141c);border:1px solid var(--line);border-radius:13px;padding:17px}.metric label{color:#788da6;font-size:10px}.metric strong{display:block;font-size:25px;margin-top:8px}.metric small{color:#7890a9}.up{color:var(--green)}.down{color:var(--red)}
-.controls{display:flex;gap:9px;align-items:center;margin:8px 0 17px}.search{height:40px;flex:1;max-width:520px;background:#0d141c;border:1px solid var(--line);border-radius:9px;color:#dbe6f2;padding:0 14px 0 37px;outline:none}.search:focus{border-color:#496887}.searchwrap{position:relative;flex:1;max-width:520px}.searchwrap span{position:absolute;left:14px;top:12px;color:#7d90a7}.select,.clear{height:40px;background:#0d141c;border:1px solid var(--line);border-radius:9px;color:#cdd9e7;padding:0 13px}.count{margin-left:auto;color:#73869d;font-size:11px}
-.subbar{display:flex;align-items:center;margin:25px 0 13px}.subbar h2{font-size:18px;margin:0}.subbar span{margin-left:auto;color:#71839a;font-size:11px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.card{background:linear-gradient(180deg,#101720,#0d141c);border:1px solid #263241;border-radius:13px;padding:16px;min-height:207px;transition:.16s;cursor:pointer}.card:hover{transform:translateY(-2px);border-color:#40536a;box-shadow:0 10px 30px #0005}.cardtop{display:flex;justify-content:space-between}.ticker{font-size:18px;font-weight:900;letter-spacing:.3px}.name{font-size:10px;color:#8093aa;margin-top:4px}.star{font-size:18px;color:#7890a8;background:none;border:0}.price{display:flex;align-items:end;justify-content:space-between;margin:18px 0 12px}.price strong{font-size:18px}.price span{font-size:14px}.boxes{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.box{border:1px solid #263341;background:#0b1219;border-radius:7px;padding:8px 7px}.box label{display:block;color:#72869e;font-size:8px;margin-bottom:4px}.box b{font-size:11px}.bar{height:4px;border-radius:5px;background:#26313d;margin:14px 0 12px;overflow:hidden}.bar i{display:block;height:100%;background:#dbe5ef}.foot{display:flex;justify-content:space-between;color:#6f849d;font-size:9px}.load{display:block;margin:20px auto 0;border:1px solid var(--line);background:#0e151e;color:#dce7f2;padding:10px 18px;border-radius:8px}
-.footer{border-top:1px solid var(--line);padding:20px 34px;color:#657a92;font-size:9px;display:flex;justify-content:space-between}
-.drawer{position:fixed;left:0;right:0;bottom:0;height:min(560px,76vh);background:#0b1119;border-top:1px solid #344253;box-shadow:0 -18px 55px #000a;z-index:50;transform:translateY(102%);transition:.24s;overflow:auto}.drawer.open{transform:translateY(0)}.drawerHead{max-width:1510px;margin:auto;padding:15px 34px 0;display:flex;justify-content:space-between}.close{width:30px;height:30px;border:1px solid var(--line);background:#e9eff6;color:#111923;border-radius:5px}.detailTitle{font-size:15px;font-weight:800;margin-top:4px}.detailTabs{max-width:1510px;margin:12px auto 0;padding:0 34px;display:flex;gap:5px}.detailTabs button{border:0;background:#f0f4f8;color:#17212c;padding:11px 17px}.detailTabs button:not(.active){background:#121923;color:#91a2b6}.detailBody{max-width:1510px;margin:auto;padding:18px 34px 40px}.detailGrid{display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:12px}.panel{border:1px solid var(--line);background:#0f161f;border-radius:10px;padding:15px}.panel h3{font-size:12px;margin:0 0 14px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th{color:#7489a2;text-align:left;font-weight:500;padding:8px;border-bottom:1px solid var(--line)}.table td{padding:8px;border-bottom:1px solid #1d2733}.pill{display:inline-block;padding:3px 7px;border-radius:999px;background:#14202c;color:#a8c4e7}.flow{height:160px;display:flex;align-items:end;gap:6px}.flow i{display:block;flex:1;background:#2ee6a655;border:1px solid #2ee6a677;border-bottom:0;min-height:8px}.hidden{display:none}
-.toast{position:fixed;right:22px;bottom:22px;background:#111a24;border:1px solid var(--line);padding:12px 15px;border-radius:9px;color:#b9c9da;z-index:80;box-shadow:0 12px 30px #0008}
-@media(max-width:1050px){.grid{grid-template-columns:repeat(3,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}.metric:last-child{display:none}.detailGrid{grid-template-columns:1fr 1fr}}
-@media(max-width:720px){.top{padding:0 15px}.brand{min-width:0}.market{display:none}.nav{padding:0 15px;gap:18px;overflow:auto}.wrap{padding:28px 15px 60px}.hero{display:block}.ref{text-align:left;margin-top:18px}.metrics{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.controls{flex-wrap:wrap}.searchwrap{max-width:none;min-width:100%}.count{margin-left:0}.footer{padding:18px 15px}.drawerHead,.detailTabs,.detailBody{padding-left:15px;padding-right:15px}.detailGrid{grid-template-columns:1fr}.drawer{height:82vh}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>B3Options — Terminal de opções</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<header class="top">
-  <div class="brand"><div class="logo">B3</div><div><b>B3Options</b><small>VOLATILIDADE · OPÇÕES · B3</small></div></div>
-  <div class="market"><span class="dot"></span>Mercado aberto</div>
-  <button class="icon" onclick="toast('Busca rápida ativa')">⌕</button>
-  <button class="icon" onclick="toast('Atualização demonstrativa')">◷</button>
-  <button class="icon avatar">R</button>
-</header>
-<nav class="nav">
-  <button class="active" data-nav="mercado">Mercado</button>
-  <button data-nav="scanner">Scanner</button>
-  <button data-nav="watchlist">Watchlist</button>
-  <button data-nav="eventos">Eventos</button>
-</nav>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">B3</div>
+      <div><strong>B3Options</strong><span>VOLATILIDADE · OPÇÕES · B3</span></div>
+    </div>
+    <div class="market"><i></i> Mercado aberto</div>
+    <div class="top-actions"><button>⌕</button><button>◔</button><button class="avatar">R</button></div>
+  </header>
 
-<main class="wrap">
-  <section class="hero">
-    <div><div class="eyebrow">TERMINAL DE OPÇÕES</div><h1>Mercado de opções em um só lugar.</h1><p>Ativos, volatilidade implícita, IV Rank, percentil, liquidez e séries.</p></div>
-    <div class="ref">Dados de referência<b>18 SET 2026 · 15:42 BRT</b></div>
-  </section>
+  <nav class="nav">
+    <button class="nav-item active" data-tab="mercado">Mercado</button>
+    <button class="nav-item" data-tab="scanner">Scanner</button>
+    <button class="nav-item" data-tab="watchlist">Watchlist</button>
+    <button class="nav-item" data-tab="eventos">Eventos</button>
+  </nav>
 
-  <section class="metrics">
-    <div class="metric"><label>IBOV</label><strong>142.318</strong><small class="up">+0,82%</small></div>
-    <div class="metric"><label>IV média B3</label><strong>26,54%</strong><small>universo B3</small></div>
-    <div class="metric"><label>IV Rank médio</label><strong>61</strong><small>últimos 252 pregões</small></div>
-    <div class="metric"><label>Opções líquidas</label><strong>1.942</strong><small>52% acima da média</small></div>
-    <div class="metric"><label>Open Interest</label><strong>32,8 mi</strong><small>contratos</small></div>
-  </section>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">TERMINAL DE OPÇÕES</div>
+        <h1>Mercado de opções em um só lugar.</h1>
+        <p>Ativos, volatilidade implícita, IV Rank, percentil, liquidez e séries.</p>
+      </div>
+      <div class="reference"><span>Dados de referência</span><strong>18 SET 2026 · 15:42 BRT</strong></div>
+    </section>
 
-  <section class="subbar"><h2>Ativos com opções listadas</h2><span id="countTop"></span></section>
-  <div class="controls">
-    <div class="searchwrap"><span>⌕</span><input id="search" class="search" placeholder="Encontrar ativos ou opções"></div>
-    <select id="sector" class="select"><option value="">Todos os setores</option></select>
-    <select id="sort" class="select"><option value="rank">IV Rank</option><option value="ticker">Código</option><option value="iv">IV</option><option value="oi">Open Interest</option><option value="change">Variação</option></select>
-    <button class="clear" onclick="clearFilters()">Limpar</button>
-    <span class="count" id="count"></span>
+    <section class="metrics">
+      <div class="metric"><span>IBOV</span><strong>142.318</strong><small class="up">+0,82%</small></div>
+      <div class="metric"><span>IV média B3</span><strong>26,54%</strong><small>universo B3</small></div>
+      <div class="metric"><span>IV Rank médio</span><strong>61</strong><small>últimos 252 pregões</small></div>
+      <div class="metric"><span>Opções líquidas</span><strong>1.942</strong><small>52% acima da média</small></div>
+      <div class="metric"><span>Open Interest</span><strong>32,8 mi</strong><small>contratos</small></div>
+    </section>
+
+    <section class="market-head">
+      <div>
+        <h2>Ativos com opções listadas</h2>
+        <span id="resultCount">82 ativos encontrados</span>
+      </div>
+      <div class="filters">
+        <label class="search"><span>⌕</span><input id="search" placeholder="Encontrar ativos ou opções"></label>
+        <select id="sector"><option value="">Todos os setores</option></select>
+        <select id="sort"><option value="ivrank">IV Rank</option><option value="ticker">Ticker</option><option value="iv">IV</option><option value="price">Preço</option><option value="oi">Open Interest</option></select>
+        <button id="clear">Limpar</button>
+      </div>
+    </section>
+
+    <section id="cards" class="cards"></section>
+  </main>
+
+  <footer><span>B3Options · Terminal de volatilidade</span><span>Dados demonstrativos · Não é recomendação de investimento</span></footer>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div><span class="eyebrow">MERCADO / ATIVO / OPÇÕES</span><h2 id="modalTitle">PETR4</h2><p id="modalSubtitle"></p></div>
+        <button class="close" data-close>×</button>
+      </div>
+      <div class="tabs">
+        <button class="detail-tab active" data-detail="series">Séries</button>
+        <button class="detail-tab" data-detail="overview">Visão geral</button>
+        <button class="detail-tab" data-detail="flow">Fluxo</button>
+        <button class="detail-tab" data-detail="simulator">Simulador B&S</button>
+      </div>
+      <div id="detailContent"></div>
+    </div>
   </div>
 
-  <div id="grid" class="grid"></div>
-  <button id="load" class="load">Carregar mais ativos</button>
-</main>
-
-<footer class="footer"><span>B3Options · Terminal de volatilidade</span><span>Dados demonstrativos · Não é recomendação de investimento</span></footer>
-
-<section id="drawer" class="drawer">
-  <div class="drawerHead"><div><div class="eyebrow">MERCADO / ATIVO / OPÇÕES</div><div id="detailTitle" class="detailTitle"></div></div><button class="close" onclick="closeDrawer()">×</button></div>
-  <div class="detailTabs"><button class="active" data-tab="series">Séries</button><button data-tab="overview">Visão geral</button><button data-tab="flow">Fluxo</button></div>
-  <div id="detailBody" class="detailBody"></div>
-</section>
-<div id="toast" class="toast hidden"></div>
-
-<script>
-const DATA = [{"ticker": "PETR4", "name": "Petrobras PN", "sector": "Petróleo & Gás", "price": 38.42, "change": 1.84, "iv": 31.6, "hv": 27.8, "rank": 72, "percentile": 81, "oi": 1840}, {"ticker": "VALE3", "name": "Vale ON", "sector": "Mineração", "price": 61.18, "change": -0.72, "iv": 28.4, "hv": 29.7, "rank": 46, "percentile": 53, "oi": 1260}, {"ticker": "ITUB4", "name": "Itaú Unibanco PN", "sector": "Bancos", "price": 39.75, "change": 0.48, "iv": 22.9, "hv": 20.4, "rank": 63, "percentile": 70, "oi": 980}, {"ticker": "BBDC4", "name": "Bradesco PN", "sector": "Bancos", "price": 14.62, "change": -1.12, "iv": 26.7, "hv": 24.1, "rank": 58, "percentile": 64, "oi": 720}, {"ticker": "BBAS3", "name": "Banco do Brasil ON", "sector": "Bancos", "price": 28.93, "change": 0.91, "iv": 25.1, "hv": 22.7, "rank": 67, "percentile": 75, "oi": 615}, {"ticker": "ABEV3", "name": "Ambev ON", "sector": "Bebidas", "price": 13.94, "change": 0.15, "iv": 20.8, "hv": 18.9, "rank": 51, "percentile": 58, "oi": 410}, {"ticker": "WEGE3", "name": "WEG ON", "sector": "Bens Industriais", "price": 48.31, "change": 1.27, "iv": 24.3, "hv": 25.6, "rank": 38, "percentile": 44, "oi": 284}, {"ticker": "B3SA3", "name": "B3 ON", "sector": "Financeiro", "price": 13.18, "change": -0.38, "iv": 23.7, "hv": 21.2, "rank": 55, "percentile": 61, "oi": 330}, {"ticker": "RENT3", "name": "Localiza ON", "sector": "Consumo", "price": 39.86, "change": 0.62, "iv": 25.9, "hv": 23.1, "rank": 64, "percentile": 69, "oi": 355}, {"ticker": "MGLU3", "name": "Magazine Luiza ON", "sector": "Varejo", "price": 10.72, "change": -2.18, "iv": 41.2, "hv": 36.4, "rank": 78, "percentile": 83, "oi": 512}, {"ticker": "LREN3", "name": "Lojas Renner ON", "sector": "Varejo", "price": 17.42, "change": 0.44, "iv": 29.8, "hv": 25.9, "rank": 57, "percentile": 63, "oi": 246}, {"ticker": "RADL3", "name": "Raia Drogasil ON", "sector": "Saúde", "price": 27.68, "change": 0.31, "iv": 24.6, "hv": 22.5, "rank": 49, "percentile": 56, "oi": 198}, {"ticker": "SUZB3", "name": "Suzano ON", "sector": "Papel e Celulose", "price": 54.12, "change": -0.64, "iv": 31.5, "hv": 28.9, "rank": 62, "percentile": 68, "oi": 438}, {"ticker": "ELET3", "name": "Eletrobras ON", "sector": "Energia", "price": 42.65, "change": 1.02, "iv": 26.1, "hv": 24.8, "rank": 52, "percentile": 59, "oi": 391}, {"ticker": "ELET6", "name": "Eletrobras PNB", "sector": "Energia", "price": 46.73, "change": 0.77, "iv": 25.4, "hv": 24.0, "rank": 50, "percentile": 57, "oi": 302}, {"ticker": "PRIO3", "name": "PRIO ON", "sector": "Petróleo & Gás", "price": 43.26, "change": 1.56, "iv": 34.2, "hv": 30.8, "rank": 73, "percentile": 79, "oi": 367}, {"ticker": "JBSS3", "name": "JBS ON", "sector": "Alimentos", "price": 30.21, "change": -0.23, "iv": 27.4, "hv": 24.2, "rank": 48, "percentile": 55, "oi": 341}, {"ticker": "BRFS3", "name": "BRF ON", "sector": "Alimentos", "price": 18.93, "change": 0.83, "iv": 33.7, "hv": 29.6, "rank": 69, "percentile": 74, "oi": 288}, {"ticker": "GGBR4", "name": "Gerdau PN", "sector": "Siderurgia", "price": 18.41, "change": -0.57, "iv": 30.2, "hv": 27.1, "rank": 54, "percentile": 60, "oi": 219}, {"ticker": "CSNA3", "name": "CSN ON", "sector": "Siderurgia", "price": 11.83, "change": -1.42, "iv": 37.1, "hv": 31.4, "rank": 76, "percentile": 82, "oi": 205}, {"ticker": "USIM5", "name": "Usiminas PNA", "sector": "Siderurgia", "price": 6.92, "change": -0.29, "iv": 36.3, "hv": 30.2, "rank": 71, "percentile": 78, "oi": 171}, {"ticker": "EMBR3", "name": "Embraer ON", "sector": "Bens Industriais", "price": 79.54, "change": 2.14, "iv": 32.8, "hv": 29.5, "rank": 68, "percentile": 77, "oi": 418}, {"ticker": "AZUL4", "name": "Azul PN", "sector": "Transporte", "price": 5.87, "change": -1.93, "iv": 58.4, "hv": 49.1, "rank": 88, "percentile": 92, "oi": 355}, {"ticker": "CVCB3", "name": "CVC Brasil ON", "sector": "Turismo", "price": 2.61, "change": 0.77, "iv": 48.1, "hv": 41.3, "rank": 82, "percentile": 88, "oi": 142}, {"ticker": "CYRE3", "name": "Cyrela ON", "sector": "Construção", "price": 26.43, "change": 0.38, "iv": 29.7, "hv": 26.2, "rank": 56, "percentile": 64, "oi": 188}, {"ticker": "MRVE3", "name": "MRV ON", "sector": "Construção", "price": 7.35, "change": -0.81, "iv": 43.2, "hv": 37.4, "rank": 79, "percentile": 85, "oi": 133}, {"ticker": "MULT3", "name": "Multiplan ON", "sector": "Shoppings", "price": 29.12, "change": 0.54, "iv": 24.1, "hv": 21.9, "rank": 47, "percentile": 54, "oi": 112}, {"ticker": "EQTL3", "name": "Equatorial ON", "sector": "Energia", "price": 35.44, "change": -0.17, "iv": 22.6, "hv": 20.7, "rank": 45, "percentile": 51, "oi": 156}, {"ticker": "ENEV3", "name": "Eneva ON", "sector": "Energia", "price": 14.84, "change": 1.11, "iv": 27.9, "hv": 24.8, "rank": 53, "percentile": 61, "oi": 174}, {"ticker": "CMIG4", "name": "Cemig PN", "sector": "Energia", "price": 12.36, "change": 0.66, "iv": 31.1, "hv": 27.4, "rank": 59, "percentile": 67, "oi": 203}, {"ticker": "CPFE3", "name": "CPFL Energia ON", "sector": "Energia", "price": 35.78, "change": -0.12, "iv": 20.6, "hv": 19.8, "rank": 42, "percentile": 48, "oi": 126}, {"ticker": "TAEE11", "name": "Taesa UNT", "sector": "Energia", "price": 36.92, "change": 0.18, "iv": 19.8, "hv": 18.7, "rank": 39, "percentile": 45, "oi": 98}, {"ticker": "SANB11", "name": "Santander Brasil UNT", "sector": "Bancos", "price": 29.41, "change": -0.31, "iv": 25.7, "hv": 23.0, "rank": 52, "percentile": 58, "oi": 137}, {"ticker": "BBSE3", "name": "BB Seguridade ON", "sector": "Seguros", "price": 37.05, "change": 0.27, "iv": 21.9, "hv": 20.1, "rank": 43, "percentile": 49, "oi": 109}, {"ticker": "PSSA3", "name": "Porto Seguro ON", "sector": "Seguros", "price": 38.67, "change": 0.42, "iv": 22.4, "hv": 20.5, "rank": 46, "percentile": 52, "oi": 92}, {"ticker": "TIMS3", "name": "TIM ON", "sector": "Telecom", "price": 17.91, "change": 0.35, "iv": 21.7, "hv": 19.6, "rank": 41, "percentile": 47, "oi": 84}, {"ticker": "VIVT3", "name": "Telefônica Brasil ON", "sector": "Telecom", "price": 47.28, "change": -0.09, "iv": 20.3, "hv": 18.9, "rank": 37, "percentile": 43, "oi": 76}, {"ticker": "TOTS3", "name": "TOTVS ON", "sector": "Tecnologia", "price": 35.11, "change": 1.04, "iv": 28.6, "hv": 25.1, "rank": 58, "percentile": 65, "oi": 143}, {"ticker": "HAPV3", "name": "Hapvida ON", "sector": "Saúde", "price": 3.89, "change": -1.15, "iv": 45.6, "hv": 39.2, "rank": 81, "percentile": 87, "oi": 167}, {"ticker": "RDOR3", "name": "Rede D'Or ON", "sector": "Saúde", "price": 35.46, "change": 0.73, "iv": 27.1, "hv": 24.4, "rank": 55, "percentile": 62, "oi": 128}, {"ticker": "KLBN11", "name": "Klabin UNT", "sector": "Papel e Celulose", "price": 20.47, "change": -0.28, "iv": 26.8, "hv": 24.7, "rank": 50, "percentile": 57, "oi": 117}, {"ticker": "RAIL3", "name": "Rumo ON", "sector": "Logística", "price": 20.13, "change": 0.61, "iv": 23.5, "hv": 21.7, "rank": 44, "percentile": 50, "oi": 101}, {"ticker": "CSAN3", "name": "Cosan ON", "sector": "Energia", "price": 8.41, "change": -0.66, "iv": 35.9, "hv": 30.6, "rank": 74, "percentile": 80, "oi": 94}, {"ticker": "VBBR3", "name": "Vibra Energia ON", "sector": "Petróleo & Gás", "price": 24.18, "change": 0.29, "iv": 28.8, "hv": 25.7, "rank": 57, "percentile": 64, "oi": 118}, {"ticker": "UGPA3", "name": "Ultrapar ON", "sector": "Química", "price": 20.06, "change": -0.41, "iv": 25.3, "hv": 22.8, "rank": 49, "percentile": 55, "oi": 86}, {"ticker": "BRAV3", "name": "Brava Energia ON", "sector": "Petróleo & Gás", "price": 21.77, "change": 1.38, "iv": 42.6, "hv": 35.9, "rank": 83, "percentile": 89, "oi": 96}, {"ticker": "CASH3", "name": "Méliuz ON", "sector": "Financeiro", "price": 8.15, "change": 2.08, "iv": 51.4, "hv": 43.7, "rank": 91, "percentile": 94, "oi": 74}, {"ticker": "COGN3", "name": "Cogna ON", "sector": "Educação", "price": 2.04, "change": -0.49, "iv": 46.7, "hv": 39.8, "rank": 86, "percentile": 90, "oi": 62}, {"ticker": "YDUQ3", "name": "Yduqs ON", "sector": "Educação", "price": 17.28, "change": 0.88, "iv": 34.5, "hv": 29.7, "rank": 72, "percentile": 79, "oi": 69}, {"ticker": "IRBR3", "name": "IRB ON", "sector": "Seguros", "price": 47.86, "change": -0.22, "iv": 39.1, "hv": 34.0, "rank": 75, "percentile": 82, "oi": 58}, {"ticker": "PETR3", "name": "Petrobras ON", "sector": "Petróleo & Gás", "price": 41.21, "change": 1.31, "iv": 30.9, "hv": 27.3, "rank": 69, "percentile": 77, "oi": 623}, {"ticker": "ITUB3", "name": "Itaú Unibanco ON", "sector": "Bancos", "price": 37.12, "change": 0.44, "iv": 22.5, "hv": 20.1, "rank": 61, "percentile": 68, "oi": 381}, {"ticker": "BBDC3", "name": "Bradesco ON", "sector": "Bancos", "price": 13.09, "change": -0.98, "iv": 27.1, "hv": 24.0, "rank": 56, "percentile": 63, "oi": 204}, {"ticker": "GOAU4", "name": "Metalúrgica Gerdau PN", "sector": "Siderurgia", "price": 10.91, "change": -0.36, "iv": 31.4, "hv": 27.9, "rank": 58, "percentile": 64, "oi": 61}, {"ticker": "BRKM5", "name": "Braskem PNA", "sector": "Química", "price": 12.74, "change": -1.04, "iv": 34.8, "hv": 29.8, "rank": 73, "percentile": 79, "oi": 83}, {"ticker": "CPLE6", "name": "Copel PNB", "sector": "Energia", "price": 10.18, "change": 0.23, "iv": 24.7, "hv": 22.0, "rank": 47, "percentile": 54, "oi": 71}, {"ticker": "ALOS3", "name": "Allos ON", "sector": "Shoppings", "price": 21.83, "change": 0.52, "iv": 23.8, "hv": 21.3, "rank": 45, "percentile": 52, "oi": 67}, {"ticker": "VIVA3", "name": "Vivara ON", "sector": "Varejo", "price": 24.65, "change": 0.93, "iv": 28.4, "hv": 24.7, "rank": 59, "percentile": 66, "oi": 82}, {"ticker": "AURE3", "name": "Auren ON", "sector": "Energia", "price": 9.42, "change": -0.27, "iv": 30.6, "hv": 26.9, "rank": 55, "percentile": 62, "oi": 57}, {"ticker": "MOTV3", "name": "Motiva ON", "sector": "Infraestrutura", "price": 12.87, "change": 0.39, "iv": 26.2, "hv": 23.4, "rank": 48, "percentile": 55, "oi": 64}, {"ticker": "POMO4", "name": "Marcopolo PN", "sector": "Bens Industriais", "price": 7.82, "change": 1.18, "iv": 29.3, "hv": 25.8, "rank": 63, "percentile": 70, "oi": 73}, {"ticker": "SMTO3", "name": "São Martinho ON", "sector": "Agro", "price": 24.32, "change": -0.16, "iv": 25.5, "hv": 22.9, "rank": 46, "percentile": 53, "oi": 54}, {"ticker": "SLCE3", "name": "SLC Agrícola ON", "sector": "Agro", "price": 19.87, "change": 0.45, "iv": 27.9, "hv": 24.6, "rank": 52, "percentile": 59, "oi": 51}, {"ticker": "TRPL4", "name": "ISA Energia PN", "sector": "Energia", "price": 25.63, "change": 0.11, "iv": 20.7, "hv": 19.3, "rank": 40, "percentile": 47, "oi": 48}, {"ticker": "BRAP4", "name": "Bradespar PN", "sector": "Mineração", "price": 18.27, "change": -0.74, "iv": 29.8, "hv": 26.1, "rank": 53, "percentile": 60, "oi": 45}, {"ticker": "LOGG3", "name": "Log CP ON", "sector": "Logística", "price": 20.95, "change": 0.68, "iv": 31.2, "hv": 27.3, "rank": 57, "percentile": 64, "oi": 39}, {"ticker": "MYPK3", "name": "Iochpe-Maxion ON", "sector": "Autopeças", "price": 11.34, "change": -0.52, "iv": 33.1, "hv": 28.4, "rank": 66, "percentile": 73, "oi": 37}, {"ticker": "TEND3", "name": "Construtora Tenda ON", "sector": "Construção", "price": 18.09, "change": 1.27, "iv": 44.1, "hv": 36.7, "rank": 80, "percentile": 87, "oi": 42}, {"ticker": "EVEN3", "name": "Even ON", "sector": "Construção", "price": 6.73, "change": 0.21, "iv": 35.4, "hv": 29.8, "rank": 63, "percentile": 70, "oi": 38}, {"ticker": "PETZ3", "name": "Petz ON", "sector": "Varejo", "price": 4.56, "change": -0.43, "iv": 38.8, "hv": 32.5, "rank": 71, "percentile": 78, "oi": 31}, {"ticker": "AERI3", "name": "Aeris ON", "sector": "Bens Industriais", "price": 7.21, "change": -1.06, "iv": 49.5, "hv": 41.2, "rank": 84, "percentile": 90, "oi": 27}, {"ticker": "BLAU3", "name": "Blau Farmacêutica ON", "sector": "Saúde", "price": 13.56, "change": 0.36, "iv": 32.6, "hv": 27.7, "rank": 51, "percentile": 58, "oi": 29}, {"ticker": "LWSA3", "name": "Locaweb ON", "sector": "Tecnologia", "price": 4.72, "change": 1.08, "iv": 41.7, "hv": 35.2, "rank": 76, "percentile": 84, "oi": 34}, {"ticker": "INTB3", "name": "Intelbras ON", "sector": "Tecnologia", "price": 14.38, "change": 0.54, "iv": 30.1, "hv": 25.8, "rank": 49, "percentile": 57, "oi": 26}, {"ticker": "GRND3", "name": "Grendene ON", "sector": "Consumo", "price": 6.94, "change": -0.19, "iv": 23.7, "hv": 21.2, "rank": 42, "percentile": 49, "oi": 24}, {"ticker": "MDIA3", "name": "M.Dias Branco ON", "sector": "Alimentos", "price": 25.72, "change": 0.31, "iv": 22.9, "hv": 20.6, "rank": 44, "percentile": 50, "oi": 21}, {"ticker": "CURY3", "name": "Cury ON", "sector": "Construção", "price": 33.18, "change": 0.72, "iv": 31.8, "hv": 27.0, "rank": 61, "percentile": 68, "oi": 35}, {"ticker": "DIRR3", "name": "Direcional ON", "sector": "Construção", "price": 29.87, "change": 0.65, "iv": 30.4, "hv": 25.9, "rank": 58, "percentile": 65, "oi": 32}, {"ticker": "JHSF3", "name": "JHSF ON", "sector": "Shoppings", "price": 6.11, "change": -0.33, "iv": 34.2, "hv": 28.6, "rank": 64, "percentile": 71, "oi": 19}, {"ticker": "AMER3", "name": "Americanas ON", "sector": "Varejo", "price": 0.91, "change": -1.08, "iv": 63.1, "hv": 52.4, "rank": 93, "percentile": 96, "oi": 16}, {"ticker": "AZZA3", "name": "Azzas 2154 ON", "sector": "Varejo", "price": 31.22, "change": 0.26, "iv": 29.4, "hv": 25.0, "rank": 55, "percentile": 62, "oi": 43}, {"ticker": "MELK3", "name": "Melnick ON", "sector": "Construção", "price": 4.88, "change": 0.44, "iv": 36.9, "hv": 30.7, "rank": 67, "percentile": 74, "oi": 18}];
-const state={query:"",sector:"",sort:"rank",shown:20,active:null,tab:"series",watch:new Set()};
-const grid=document.getElementById("grid"), search=document.getElementById("search"), sector=document.getElementById("sector"), sort=document.getElementById("sort");
-[...new Set(DATA.map(x=>x.sector))].sort().forEach(s=>sector.insertAdjacentHTML("beforeend",`<option>${s}</option>`));
-
-function filtered(){
- let a=DATA.filter(x=>(!state.query || (x.ticker+" "+x.name+" "+x.sector).toLowerCase().includes(state.query.toLowerCase())) && (!state.sector||x.sector===state.sector));
- a.sort((x,y)=> state.sort==="ticker"?x.ticker.localeCompare(y.ticker):state.sort==="iv"?y.iv-x.iv:state.sort==="oi"?y.oi-x.oi:state.sort==="change"?y.change-x.change:y.rank-x.rank);
- return a;
-}
-function money(v){return "R$ "+v.toFixed(2).replace(".",",")}
-function render(){
- const all=filtered(), a=all.slice(0,state.shown);
- grid.innerHTML=a.map(x=>`<article class="card" onclick="openDrawer('${x.ticker}')">
-  <div class="cardtop"><div><div class="ticker">${x.ticker}</div><div class="name">${x.name}</div></div><button class="star" onclick="event.stopPropagation();toggleWatch('${x.ticker}')">${state.watch.has(x.ticker)?"★":"☆"}</button></div>
-  <div class="price"><strong>${money(x.price)}</strong><span class="${x.change>=0?"up":"down"}">${x.change>=0?"+":""}${x.change.toFixed(2).replace(".",",")}%</span></div>
-  <div class="boxes">
-   <div class="box"><label>IV</label><b>${x.iv.toFixed(1)}%</b></div><div class="box"><label>HV</label><b>${x.hv.toFixed(1)}%</b></div><div class="box"><label>IV Rank</label><b>${x.rank}</b></div><div class="box"><label>Percentil</label><b>${x.percentile}%</b></div>
-  </div>
-  <div class="bar"><i style="width:${x.percentile}%"></i></div>
-  <div class="foot"><span>OI ${x.oi>=1000?(x.oi/1000).toFixed(2).replace(".",",")+" mi":x.oi+" mil"}</span><span>${x.sector}</span></div>
- </article>`).join("");
- document.getElementById("count").textContent=`${all.length} ativos`;
- document.getElementById("countTop").textContent=`${all.length} ativos encontrados`;
- document.getElementById("load").style.display=state.shown<all.length?"block":"none";
-}
-function clearFilters(){state.query="";state.sector="";state.sort="rank";state.shown=20;search.value="";sector.value="";sort.value="rank";render()}
-search.oninput=e=>{state.query=e.target.value;state.shown=20;render()}
-sector.onchange=e=>{state.sector=e.target.value;state.shown=20;render()}
-sort.onchange=e=>{state.sort=e.target.value;render()}
-document.getElementById("load").onclick=()=>{state.shown+=20;render()}
-function toggleWatch(t){state.watch.has(t)?state.watch.delete(t):state.watch.add(t);render()}
-function find(t){return DATA.find(x=>x.ticker===t)}
-function seriesRows(x){
- const exps=["16 OUT 2026","20 NOV 2026","18 DEZ 2026","15 JAN 2027","19 FEV 2027"];
- return exps.map((d,i)=>{let strike=Math.round(x.price*(.85+i*.075)*2)/2;let iv=x.iv+(i-2)*1.7;let call=x.price*0.045*(1+i*.15);let put=x.price*0.038*(1+i*.12);return `<tr><td>${d}</td><td>${x.ticker}${String.fromCharCode(65+i)}${(Math.round(strike*10))}</td><td><span class="pill">CALL</span></td><td>${strike.toFixed(2).replace(".",",")}</td><td>${iv.toFixed(1)}%</td><td>${call.toFixed(2).replace(".",",")}</td><td>${Math.round(x.oi/(i+1))} mil</td></tr><tr><td>${d}</td><td>${x.ticker}${String.fromCharCode(77+i)}${(Math.round(strike*10))}</td><td><span class="pill">PUT</span></td><td>${strike.toFixed(2).replace(".",",")}</td><td>${(iv+2.4).toFixed(1)}%</td><td>${put.toFixed(2).replace(".",",")}</td><td>${Math.round(x.oi*.72/(i+1))} mil</td></tr>`}).join("");
-}
-function openDrawer(t){state.active=t;state.tab="series";document.getElementById("drawer").classList.add("open");document.getElementById("detailTitle").textContent=`${t} · ${find(t).name}`;renderDetail();document.body.style.overflow="hidden"}
-function closeDrawer(){document.getElementById("drawer").classList.remove("open");document.body.style.overflow=""}
-function renderDetail(){
- const x=find(state.active), body=document.getElementById("detailBody");
- document.querySelectorAll(".detailTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===state.tab));
- if(state.tab==="series") body.innerHTML=`<div class="panel"><h3>Séries listadas · ${x.ticker}</h3><table class="table"><thead><tr><th>Vencimento</th><th>Código</th><th>Tipo</th><th>Strike</th><th>IV</th><th>Prêmio</th><th>OI</th></tr></thead><tbody>${seriesRows(x)}</tbody></table></div>`;
- if(state.tab==="overview") body.innerHTML=`<div class="detailGrid"><div class="panel"><h3>Perfil de volatilidade</h3><div class="flow">${[55,74,64,88,72,95,82,61,78,91,67,84].map(v=>`<i style="height:${v}%"></i>`).join("")}</div></div><div class="panel"><h3>Indicadores</h3><p>IV <b>${x.iv.toFixed(1)}%</b></p><p>HV <b>${x.hv.toFixed(1)}%</b></p><p>IV Rank <b>${x.rank}</b></p><p>Percentil <b>${x.percentile}%</b></p></div><div class="panel"><h3>Liquidez</h3><p>Open Interest <b>${x.oi>=1000?(x.oi/1000).toFixed(2).replace(".",",")+" mi":x.oi+" mil"}</b></p><p>Variação <b class="${x.change>=0?"up":"down"}">${x.change>=0?"+":""}${x.change.toFixed(2)}%</b></p><p>Setor <b>${x.sector}</b></p></div></div>`;
- if(state.tab==="flow") body.innerHTML=`<div class="detailGrid"><div class="panel"><h3>Fluxo de opções</h3><div class="flow">${[30,55,44,70,82,51,93,66,78,48,86,62,95,72,58].map(v=>`<i style="height:${v}%"></i>`).join("")}</div></div><div class="panel"><h3>CALL</h3><p>Volume <b>R$ ${(x.oi*.31).toFixed(0)} mil</b></p><p>Compras <b class="up">58%</b></p><p>IV média <b>${(x.iv-1.2).toFixed(1)}%</b></p></div><div class="panel"><h3>PUT</h3><p>Volume <b>R$ ${(x.oi*.22).toFixed(0)} mil</b></p><p>Compras <b class="down">42%</b></p><p>IV média <b>${(x.iv+1.4).toFixed(1)}%</b></p></div></div>`;
-}
-document.querySelectorAll(".detailTabs button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;renderDetail()});
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(n=>n.classList.remove("active"));b.classList.add("active");if(b.dataset.nav==="watchlist"){state.query="";state.sector="";state.sort="ticker";state.shown=DATA.length;render();grid.innerHTML=[...grid.children].filter(c=>state.watch.has(c.querySelector(".ticker").textContent)).map(c=>c.outerHTML).join("")||`<div style="color:#7890a8;padding:25px">Nenhum ativo na watchlist.</div>`}else if(b.dataset.nav==="scanner"){state.sort="iv";sort.value="iv";render()}else if(b.dataset.nav==="eventos"){toast("Calendário de eventos: demonstração");}else clearFilters()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
-function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.remove("hidden");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.add("hidden"),1800)}
-render();
-</script>
+  <script src="./script.js"></script>
 </body>
 </html>
