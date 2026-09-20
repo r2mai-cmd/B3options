@@ -216,4 +216,17 @@ function simFromStrike(k,type){
   setTimeout(()=>{$("#sStrike").value=k;$("#sType").value=type;$("#sPremium").value="";$("#calcBtn").click()},0);
 }
 
+// Navegação da calculadora: abre o simulador B&S diretamente, sem exigir clique em um ativo.
+document.querySelectorAll(".nav-item").forEach(btn=>btn.addEventListener("click",()=>{
+  const tab=btn.dataset.tab;
+  if(tab!=="calculadora") return;
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const a=assets[0];
+  $("#modalTitle").textContent="Calculadora B&S";
+  $("#modalSubtitle").textContent="Simulação de preço, gregas e payoff";
+  $("#modal").classList.remove("hidden");
+  setDetail("simulator",a);
+}));
+
 render();
