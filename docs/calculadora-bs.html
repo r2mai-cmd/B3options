@@ -1,20 +1,139 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>B3Options — Calculadora Black-Scholes</title>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B3Options — Calculadora B&amp;S</title>
 <style>
-body{margin:0;background:#070b10;color:#f4f7fb;font:16px Arial}header{height:68px;border-bottom:1px solid #263544;display:flex;align-items:center;padding:0 28px;gap:15px}a{color:#9fc8ee;text-decoration:none;margin-right:18px}.logo{background:#eef5fb;color:#071019;padding:10px;border-radius:9px;font-weight:900}.wrap{max-width:1100px;margin:35px auto;padding:0 24px}.card{background:#101923;border:1px solid #263544;border-radius:12px;padding:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.f label{display:block;color:#a9bbcc;font-size:13px;margin-bottom:6px}.f input,.f select{width:100%;box-sizing:border-box;background:#0b131b;color:#fff;border:1px solid #304252;border-radius:7px;padding:12px;font-size:16px}button{margin-top:20px;padding:12px 20px;border:0;border-radius:7px;background:#dcecf8;font-weight:bold;cursor:pointer}.result{margin-top:20px;font-size:24px}.muted{color:#91a4b8}@media(max-width:700px){.grid{grid-template-columns:1fr}}
-</style></head>
-<body><header><div class="logo">B3</div><b>B3Options</b><a href="index.html">Mercado</a><a href="simulador.html">Simulador</a><a href="calculadora-bs.html">Calculadora B&amp;S</a></header>
-<div class="wrap"><h1>Calculadora Black-Scholes</h1><p class="muted">Calcula o prêmio teórico de uma CALL ou PUT.</p><div class="card"><div class="grid">
-<div class="f"><label>Tipo</label><select id="type"><option>CALL</option><option>PUT</option></select></div>
-<div class="f"><label>Preço do ativo (S)</label><input id="S" type="number" step=".01" value="17.99"></div>
-<div class="f"><label>Strike (K)</label><input id="K" type="number" step=".01" value="15.03"></div>
-<div class="f"><label>Volatilidade anual (%)</label><input id="v" type="number" step=".1" value="34"></div>
-<div class="f"><label>Taxa de juros anual (%)</label><input id="r" type="number" step=".01" value="13.75"></div>
-<div class="f"><label>Tempo até vencimento (dias)</label><input id="d" type="number" value="41"></div>
-</div><button onclick="calc()">Calcular</button><div class="result" id="res">Prêmio: —</div></div></div>
+*{box-sizing:border-box}
+body{margin:0;background:#070b10;color:#f3f7fb;font:16px/1.45 Arial,Helvetica,sans-serif}
+header{height:78px;background:#090e14;border-bottom:1px solid #263340;display:flex;align-items:center;padding:0 30px;gap:14px}
+.logo{width:40px;height:40px;border-radius:10px;background:#edf4fa;color:#071019;display:grid;place-items:center;font-weight:900}
+.brand b{display:block;font-size:18px}.brand small{display:block;color:#7890a7;font-size:9px;letter-spacing:1.5px;margin-top:2px}
+nav{display:flex;align-items:center;gap:7px;margin-left:24px;overflow-x:auto}
+nav a{color:#a6b9ca;text-decoration:none;padding:12px 13px;border-radius:7px;white-space:nowrap;font-size:15px}
+nav a:hover{background:#111b25;color:#fff}nav a.active{background:#14202b;color:#fff;border-bottom:2px solid #fff}
+main{max-width:1400px;margin:auto;padding:34px}
+h1{font-size:31px;margin:0 0 6px}.lead{color:#a2b3c4;margin:0 0 25px}
+.layout{display:grid;grid-template-columns:470px 1fr;gap:24px;align-items:start}
+.card{background:#0e161f;border:1px solid #2d3c4c;border-radius:12px;padding:20px}
+fieldset{border:1px solid #465463;border-radius:7px;padding:13px;margin:0 0 20px}
+legend{color:#e4edf5;padding:0 6px;font-size:15px}
+.row{display:flex;align-items:center;gap:12px;margin:11px 0}
+.row label{cursor:pointer}.row input[type=radio]{accent-color:#2f9dff}
+.codebox{margin-left:auto;width:150px;background:#0a121a;border:1px solid #394a5b;color:#fff;border-radius:6px;padding:10px;font-size:16px}
+.two{display:grid;grid-template-columns:1fr 150px;gap:10px;align-items:center;margin:12px 0}
+.two label{color:#d0dbe4}.two input{width:100%;background:#0a121a;color:#fff;border:1px solid #394a5b;border-radius:6px;padding:10px;font-size:16px}
+.subbox{border:1px solid #465463;border-radius:7px;padding:13px;margin-top:20px}
+.subbox-title{color:#e4edf5;margin:-27px 0 12px;background:#0e161f;width:max-content;padding:0 6px}
+.subrow{display:grid;grid-template-columns:1fr 150px;gap:10px;align-items:center;margin:11px 0}
+.subrow input{width:100%;background:#0a121a;color:#fff;border:1px solid #394a5b;border-radius:6px;padding:10px;font-size:16px}
+.subrow input:disabled{opacity:.45}
+.actions{display:flex;justify-content:center;margin-top:18px}
+.btn{border:1px solid #3b4e60;background:#172532;color:#fff;border-radius:7px;padding:10px 20px;font-size:16px;cursor:pointer}
+.btn.primary{background:#e3edf5;color:#071019;border-color:#e3edf5;font-weight:800}
+.result h2{font-size:25px;margin:0 0 8px}.big{font-size:38px;font-weight:800;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.metric{border:1px solid #2d3c4c;background:#0a121a;border-radius:8px;padding:12px}.metric span{display:block;color:#91a6ba;font-size:13px}.metric b{display:block;font-size:19px;margin-top:5px}
+.note{margin-top:18px;border:1px solid #2d3c4c;background:#0a121a;border-radius:8px;padding:14px;color:#9eafbf;font-size:13px}
+.tools{display:flex;gap:10px;margin-bottom:18px}.tools a{color:#e9f3fb;text-decoration:none;border:1px solid #394d60;border-radius:8px;padding:9px 13px;background:#101923;font-weight:700}.tools a.active{border-color:#dfeaf3}
+footer{padding:24px 34px;border-top:1px solid #263340;color:#70859a;margin-top:20px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){main{padding:20px 14px}.grid{grid-template-columns:1fr}.two,.subrow{grid-template-columns:1fr}.codebox{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">B3</div><div class="brand"><b>B3Options</b><small>VOLATILIDADE · OPÇÕES · B3</small></div>
+<nav>
+<a href="index.html">Mercado</a><a href="index.html#scanner">Scanner</a><a href="index.html#watchlist">Watchlist</a><a href="index.html#eventos">Eventos</a>
+<a class="active" href="calculadora-bs.html">Calculadora B&amp;S</a><a href="simulador.html">Simulador de Estratégias</a>
+</nav>
+</header>
+<main>
+<div class="tools"><a class="active" href="calculadora-bs.html">Calculadora B&amp;S</a><a href="simulador.html">Simulador de Estratégias</a></div>
+<h1>Calculadora Black-Scholes</h1>
+<p class="lead">Modelo Black-Scholes para calcular prêmio teórico, preço da ação ou volatilidade implícita.</p>
+<div class="layout">
+<section class="card">
+<fieldset>
+<legend>Escolha uma forma de iniciar o cálculo</legend>
+<div class="row"><label><input type="radio" name="start" value="code" checked> Código da opção</label><input id="code" class="codebox" placeholder=""></div>
+<div class="row"><label><input type="radio" name="start" value="free"> Simular livremente</label><span><label><input type="radio" name="type" value="CALL" checked> CALL</label> &nbsp; <label><input type="radio" name="type" value="PUT"> PUT</label></span></div>
+</fieldset>
+
+<div class="two"><label>Strike</label><input id="strike" type="number" step="0.01" value="15.03"></div>
+<div class="two"><label>Vencimento</label><input id="expiry" type="date"></div>
+<div class="two"><label>Taxa de juros (a.a.)</label><input id="rate" type="number" step="0.01" value="13.75"></div>
+<div class="two"><label>Data referência</label><input id="ref" type="date"></div>
+<div class="two"><label>Dias úteis para venc.</label><input id="days" type="number" min="0" placeholder=""></div>
+
+<div class="subbox">
+<div class="subbox-title">Selecione o item a calcular e informe os demais</div>
+<div class="subrow"><label><input type="radio" name="target" value="spot"> Preço da ação</label><input id="spot" type="number" step="0.01" value="17.99"></div>
+<div class="subrow"><label><input type="radio" name="target" value="vol"> Volatilidade impl.</label><input id="vol" type="number" step="0.01" value="34"></div>
+<div class="subrow"><label><input type="radio" name="target" value="premium" checked> Prêmio da opção</label><input id="premium" type="number" step="0.0001" placeholder=""></div>
+<div class="actions"><button class="btn primary" id="calculate">Calcular</button></div>
+</div>
+</section>
+
+<section class="card result">
+<h2>Resultado</h2>
+<div class="big" id="mainResult">Prêmio da opção: —</div>
+<div class="grid">
+<div class="metric"><span>Tipo</span><b id="rType">CALL</b></div>
+<div class="metric"><span>Preço da ação</span><b id="rSpot">—</b></div>
+<div class="metric"><span>Strike</span><b id="rStrike">—</b></div>
+<div class="metric"><span>Volatilidade</span><b id="rVol">—</b></div>
+<div class="metric"><span>Tempo</span><b id="rTime">—</b></div>
+<div class="metric"><span>Taxa a.a.</span><b id="rRate">—</b></div>
+</div>
+<div class="note">Os resultados são teóricos. O preço de mercado pode divergir por volatilidade, juros, dividendos, spread, liquidez e outros fatores.</div>
+</section>
+</div>
+</main>
+<footer>B3Options · Calculadora Black-Scholes · Uso educacional.</footer>
 <script>
+const $=id=>document.getElementById(id);
+const today=new Date(); const iso=d=>d.toISOString().slice(0,10);
+const exp=new Date(today); exp.setDate(exp.getDate()+41);
+$('ref').value=iso(today); $('expiry').value=iso(exp);
+
 function erf(x){const s=x<0?-1:1;x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x))}
-function calc(){let S=+document.getElementById('S').value,K=+document.getElementById('K').value,v=+document.getElementById('v').value/100,r=+document.getElementById('r').value/100,T=+document.getElementById('d').value/365,type=document.getElementById('type').value;let d1=(Math.log(S/K)+(r+v*v/2)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T),N=x=>.5*(1+erf(x/Math.sqrt(2))),p=type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);document.getElementById('res').textContent='Prêmio teórico: R$ '+p.toFixed(4)}
-calc();
-</script></body></html>
+function N(x){return .5*(1+erf(x/Math.sqrt(2)))}
+function bs(S,K,T,sigma,r,type){
+ if(T<=0)return type==='CALL'?Math.max(S-K,0):Math.max(K-S,0);
+ if(sigma<=0)return type==='CALL'?Math.max(S-K*Math.exp(-r*T),0):Math.max(K*Math.exp(-r*T)-S,0);
+ const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T)),d2=d1-sigma*Math.sqrt(T);
+ return type==='CALL'?S*N(d1)-K*Math.exp(-r*T)*N(d2):K*Math.exp(-r*T)*N(-d2)-S*N(-d1);
+}
+function timeYears(){
+ const days=Number($('days').value);
+ if(days>0)return days/252;
+ const a=new Date($('ref').value+'T12:00:00'),b=new Date($('expiry').value+'T12:00:00');
+ return Math.max(0,(b-a)/86400000/365);
+}
+function calculate(){
+ let S=+$('spot').value,K=+$('strike').value,r=+$('rate').value/100,sigma=+$('vol').value/100,T=timeYears();
+ const type=document.querySelector('input[name=type]:checked').value,target=document.querySelector('input[name=target]:checked').value;
+ if(!(K>0&&T>=0)){alert('Informe strike e vencimento/data de referência.');return}
+ if(target==='premium'){
+   if(!(S>0&&sigma>0)){alert('Para calcular o prêmio, informe preço da ação e volatilidade.');return}
+   const p=bs(S,K,T,sigma,r,type); $('premium').value=p.toFixed(4); $('mainResult').textContent='Prêmio da opção: R$ '+p.toFixed(4);
+ } else if(target==='spot'){
+   const p=+$('premium').value;
+   if(!(p>=0&&sigma>0)){alert('Informe prêmio e volatilidade.');return}
+   let lo=.0001,hi=Math.max(K*5,1000);
+   for(let i=0;i<120;i++){const m=(lo+hi)/2,v=bs(m,K,T,sigma,r,type);if(type==='CALL'?(v<p):(v>p))lo=m;else hi=m}
+   S=(lo+hi)/2;$('spot').value=S.toFixed(4);$('mainResult').textContent='Preço da ação: R$ '+S.toFixed(4);
+ } else {
+   const p=+$('premium').value;
+   if(!(S>0&&p>=0)){alert('Informe preço da ação e prêmio.');return}
+   let lo=.000001,hi=5;
+   for(let i=0;i<120;i++){const m=(lo+hi)/2,v=bs(S,K,T,m,r,type);if(v<p)lo=m;else hi=m}
+   sigma=(lo+hi)/2;$('vol').value=(sigma*100).toFixed(4);$('mainResult').textContent='Volatilidade implícita: '+(sigma*100).toFixed(4)+'%';
+ }
+ $('rType').textContent=type;$('rSpot').textContent='R$ '+S.toFixed(4);$('rStrike').textContent='R$ '+K.toFixed(4);
+ $('rVol').textContent=(sigma*100).toFixed(2)+'%';$('rTime').textContent=(T*365).toFixed(1)+' dias';$('rRate').textContent=(r*100).toFixed(2)+'%';
+}
+$('calculate').onclick=calculate;
+</script>
+</body></html>

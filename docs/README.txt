@@ -1,15 +1,21 @@
-B3Options — versão estática para GitHub Pages
+B3OPTIONS — ENTREGA CORRIGIDA
 
-COMO PUBLICAR
-1. No GitHub, deixe Settings > Pages > Source como "Deploy from a branch".
-2. Branch: main.
-3. Folder: /docs.
-4. Salve.
-5. Aguarde alguns segundos e abra:
-   https://r2mai-cmd.github.io/B3options/
+Substitua TODO o conteúdo da pasta /docs do GitHub pelos arquivos desta pasta:
 
-IMPORTANTE
-- Esta versão não usa React, Vite, npm ou GitHub Actions.
-- O site inteiro está em docs/index.html, então não depende de style.css/script.js.
-- Os números de mercado/opções são demonstrativos. Para dados reais é necessário conectar uma fonte/API de mercado.
-- Clique em qualquer ativo para abrir as séries CALL/PUT, visão geral e fluxo.
+index.html
+style.css
+script.js
+calculadora-bs.html
+simulador.html
+
+Atenção:
+1) Não deixe os arquivos antigos misturados.
+2) O menu tem dois itens separados:
+   - Calculadora B&S
+   - Simulador de Estratégias
+3) A Calculadora B&S segue o formulário da imagem enviada.
+4) O Simulador é uma página independente.
+5) Depois do commit, aguarde o GitHub Pages publicar e faça Ctrl+F5.
+6) Se o Pages estiver configurado para /docs, todos os 5 arquivos devem ficar diretamente em /docs.
+
+O pacote já está organizado como /docs.
