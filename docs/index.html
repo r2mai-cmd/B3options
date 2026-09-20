@@ -1,102 +1,12 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>B3Options — Terminal de Volatilidade</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">B3</div>
-      <div><b>B3Options</b><small>VOLATILIDADE • OPÇÕES • B3</small></div>
-    </div>
-    <div class="market"><i></i> Mercado aberto</div>
-    <div class="actions"><button>⌕</button><button>◔</button><button class="avatar">R</button></div>
-  </header>
-
-  <nav class="tabs">
-    <button class="tab active" data-tab="dashboard">Visão geral</button>
-    <button class="tab" data-tab="scanner">Scanner</button>
-    <button class="tab" data-tab="watchlist">Watchlist</button>
-    <button class="tab" data-tab="details">Detalhes</button>
-    <button class="tab" data-tab="news">Eventos</button>
-  </nav>
-
-  <main class="main">
-    <section class="hero">
-      <div>
-        <small>TERMINAL DE VOLATILIDADE</small>
-        <h1>Opções B3 em um só lugar.</h1>
-        <p>IV, volatilidade histórica, IV Rank, percentis, skew, term structure, gregas, liquidez e fluxo.</p>
-      </div>
-      <div class="date">Dados de referência<strong>18 SET 2026 • 15:42 BRT</strong></div>
-    </section>
-
-    <section class="metric-grid">
-      <div class="metric"><span>IBOV</span><b>142.318</b><em class="up">+0,82%</em></div>
-      <div class="metric"><span>IV média B3</span><b>26,54%</b><em>universo B3</em></div>
-      <div class="metric"><span>IV Rank médio</span><b>61</b><em>últimos 252 pregões</em></div>
-      <div class="metric"><span>Opções líquidas</span><b>1.942</b><em>52% acima da média</em></div>
-      <div class="metric"><span>Open Interest</span><b>32,8 mi</b><em>contratos</em></div>
-    </section>
-
-    <section id="dashboard" class="view active">
-      <div class="toolbar">
-        <label class="search">⌕ <input id="search" placeholder="Buscar ticker ou empresa"></label>
-        <select id="sector"><option>Todos os setores</option><option>Bancos</option><option>Petróleo & Gás</option><option>Mineração</option><option>Financeiro</option></select>
-        <select id="sort"><option value="rank">IV Rank</option><option value="iv">IV</option><option value="change">Variação</option></select>
-        <span id="count" class="count"></span>
-      </div>
-      <div id="cards" class="cards"></div>
-    </section>
-
-    <section id="scanner" class="view">
-      <div class="panel">
-        <div class="panel-head"><div><small>SCANNER</small><h2>Oportunidades por volatilidade</h2></div><span class="chip">252 pregões</span></div>
-        <div class="table" id="scannerTable"></div>
-      </div>
-    </section>
-
-    <section id="watchlist" class="view">
-      <div class="panel">
-        <div class="panel-head"><div><small>WATCHLIST</small><h2>Ativos acompanhados</h2></div></div>
-        <div id="watch" class="watch"></div>
-      </div>
-    </section>
-
-    <section id="details" class="view">
-      <div class="panel">
-        <div class="detail-head"><button class="back" data-tab="dashboard">← Visão geral</button><div><small>ATIVO SELECIONADO</small><h2 id="detailTicker">PETR4</h2></div><button class="primary">Abrir cadeia</button></div>
-        <div id="detailStats" class="detail-stats"></div>
-        <div class="charts">
-          <div class="panel inner"><small>IV × HV — 12 MESES</small><div class="chart"><div class="line l1"></div><div class="line l2"></div></div><div class="axis"><span>SET/25</span><span>DEZ/25</span><span>MAR/26</span><span>JUN/26</span><span>SET/26</span></div></div>
-          <div class="panel inner"><small>IV RANK</small><div class="rank-big" id="rankBig">72</div><div class="bar"><i id="rankBar"></i></div><p class="muted">Percentil de volatilidade implícita nos últimos 252 pregões.</p></div>
-        </div>
-        <div class="panel inner">
-          <div class="panel-head"><div><small>CADEIA DE OPÇÕES</small><h3>Calls e Puts</h3></div><div class="controls"><select><option>18/09/2026</option><option>16/10/2026</option><option>20/11/2026</option></select></div></div>
-          <div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Strike</th><th>Bid</th><th>Ask</th><th>Último</th><th>Vol</th><th>OI</th><th>IV</th><th>Delta</th><th>Gamma</th></tr></thead><tbody id="chain"></tbody></table></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="news" class="view">
-      <div class="panel">
-        <div class="panel-head"><div><small>EVENTOS</small><h2>Eventos que podem afetar a volatilidade</h2></div><span class="chip">Próximos 60 dias</span></div>
-        <div class="events">
-          <div><b>18/09</b><span><strong>Vencimento de opções</strong>Janela de vencimento mensal da B3</span><i>Mercado</i></div>
-          <div><b>21/09</b><span><strong>Reunião do Copom</strong>Decisão e comunicação de política monetária</span><i>Macro</i></div>
-          <div><b>09/10</b><span><strong>Dados de inflação</strong>Indicadores econômicos podem alterar expectativas</span><i>Macro</i></div>
-          <div><b>16/10</b><span><strong>Vencimento de opções</strong>Próximo ciclo de vencimento</span><i>Mercado</i></div>
-          <div><b>31/10</b><span><strong>Temporada de resultados</strong>Janela de divulgação de resultados corporativos</span><i>Empresas</i></div>
-        </div>
-      </div>
-    </section>
-  </main>
-  <footer>B3Options • Terminal de volatilidade <span>Dados demonstrativos • Não é recomendação de investimento</span></footer>
-</div>
-<script src="script.js"></script>
-</body>
-</html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B3Options</title><link rel="stylesheet" href="./style.css"></head><body>
+<header><div class="brand"><strong>B3</strong><div><b>B3Options</b><small>VOLATILIDADE · OPÇÕES · B3</small></div></div><div class="status">● Mercado aberto</div><button class="ico" onclick="focusSearch()">⌕</button><button class="ico">◔</button><button class="avatar">R</button></header>
+<nav><button class="active">Mercado</button><button>Scanner</button><button>Watchlist</button><button>Eventos</button></nav>
+<main><section class="hero"><div><label>TERMINAL DE OPÇÕES</label><h1>Mercado de opções em um só lugar.</h1><p>Ativos, volatilidade implícita, IV Rank, percentil, liquidez e séries.</p></div><aside>Dados de referência<strong>18 SET 2026 · 15:42 BRT</strong></aside></section>
+<section class="stats"><div>IBOV<b>142.318</b><i>+0,82%</i></div><div>IV média B3<b>26,54%</b><i>universo B3</i></div><div>IV Rank médio<b>61</b><i>últimos 252 pregões</i></div><div>Opções líquidas<b>1.942</b><i>52% acima da média</i></div><div>Open Interest<b>32,8 mi</b><i>contratos</i></div></section>
+<section class="high"><article><b>Volumes em Opções</b><span>BOVA11 · R$ 401,6 mi<br>PETR4 · R$ 253,5 mi<br>VALE3 · R$ 142,4 mi<br>BOVV11 · R$ 100,9 mi<br>BBAS3 · R$ 93,6 mi</span></article><article><b>Variações em CALL</b><span>B3SAJ177W2 · +750%<br>CSNAE80 · +513%<br>ITUBI434W2 · +466%<br>BBDCI183W2 · +450%<br>SLCEJ206 · +433%</span></article><article><b>Variações em PUT</b><span>HAPVV820 · +325%<br>USIMU740W2 · +200%<br>USIMU790W2 · +126%<br>AZZAU175W2 · +93%<br>VALEU799W2 · +88%</span></article><article><b>Lançamento Coberto</b><span>EZTCH120 · 42,29%<br>VALEG730 · 31,34%<br>ABEVD15 · 23,97%<br>CSNAF604 · 22,76%<br>BOVAF38 · 22,44%</span></article></section>
+<section><div class="heading"><div><label>LISTA DE ATIVOS</label><h2>Ativos com opções listadas</h2><p id="count"></p></div><aside>Índice Bovespa<strong>187.877,00</strong><i>+1,21%</i></aside></div>
+<div class="toolbar"><div class="search">⌕<input id="q" placeholder="Encontrar ativos ou opções"></div><select id="sector"><option>Todos os setores</option></select><select id="sort"><option value="rank">IV Rank</option><option value="code">Código</option><option value="price">Preço</option><option value="change">Variação</option><option value="iv">Volatilidade</option></select><button onclick="reset()">Limpar</button></div>
+<div id="cards" class="cards"></div><button id="more" class="more" onclick="more()">Carregar mais ativos</button></section></main>
+<footer>B3Options · Terminal de volatilidade <span>Dados demonstrativos · Não é recomendação de investimento</span></footer>
+<div id="modal" class="modal"><div onclick="closeM()" class="back"></div><div class="panel"><button class="x" onclick="closeM()">×</button><div class="crumb">MERCADO / ATIVO / OPÇÕES</div><h2 id="mt"></h2><div class="price"><b id="mp"></b><i id="mc"></i></div><div class="mstats" id="ms"></div><div class="tabs"><button class="on" onclick="tab(0,this)">Séries</button><button onclick="tab(1,this)">Visão geral</button><button onclick="tab(2,this)">Fluxo</button></div><div id="series"><div id="pills" class="pills"></div><div class="tabletitle"><b>Grade de opções</b><span>CALL e PUT lado a lado</span></div><div class="tablewrap"><table><thead><tr><th colspan="6">CALL</th><th>STRIKE</th><th colspan="6">PUT</th></tr><tr><th>Código</th><th>Último</th><th>Delta</th><th>Liquidez</th><th>IV</th><th>Ask</th><th>Preço</th><th>Bid</th><th>IV</th><th>Liquidez</th><th>Delta</th><th>Último</th><th>Código</th></tr></thead><tbody id="tb"></tbody></table></div></div><div id="overview" class="hidden boxes"><div>Desvio padrão<b id="std"></b></div><div>IV (1 ano)<b id="iv"></b></div><div>IV Rank<b id="rk"></b></div><div>IV Percentil<b id="pc"></b></div></div><div id="flow" class="hidden boxes"><div>Open Interest<b>1,84 mi</b></div><div>Volume financeiro<b>R$ 253,5 mi</b></div><div>CALL / PUT<b>58% / 42%</b></div><div>Liquidez média<b>4,1 / 5</b></div></div></div></div>
+<script src="./script.js"></script></body></html>
