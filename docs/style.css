@@ -55,3 +55,8 @@ main{max-width:1450px;padding:38px 34px}
   .hero aside,.heading aside{text-align:left;margin-top:15px}
   .tools-strip{overflow-x:auto;white-space:nowrap}
 }
+
+.data-status,.tools-strip [data-source-status]{color:#91a4b8;font-size:12px;align-self:center}
+.data-status.error,.tools-strip [data-source-status].error{color:#ff8b9b}
+.data-config{margin-left:auto;padding:8px 10px;font-size:12px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
